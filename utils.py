@@ -1,5 +1,9 @@
-import numpy as np 
-import cupy as cp
+#import numpy as np 
+#import cupy as cp
+try:
+    import cupy as cp
+except ImportError:
+    import numpy as cp
 import pylab as pyl 
 import scipy.fftpack as sp
 import time
@@ -306,7 +310,7 @@ def getMetaKno(name, **kwargs):
 		dir_ = kwargs['dir']
 	f = open("../" + dir_ + name + "/" + name + "Meta.txt")
 
-	print "reading meta info..."
+	print("reading meta info...")
 	
 	metaParams = {}
 
@@ -316,7 +320,7 @@ def getMetaKno(name, **kwargs):
 	for line in f.readlines():
 		for key_ in kwargs.keys():
 			if key_ + ":" in line:
-				print line
+				print(line)
 				number = line.split(":")[1]
 				#metaParams[key_] = re.findall(r"[-+]?\d*\.\d+|\d+", line)[0]
 				if key_ == "N" or key_ == "frames" or key_ == "n" or key_ == "drops":
@@ -399,7 +403,7 @@ def readyDir(ofile, tag):
 		os.mkdir("../" + ofile + "/" + tag)
 	except OSError:
 		try: # assuming directory already exists, delete it and try again
-			print "removing and recreating an existing directory"
+			print("removing and recreating an existing directory")
 			shutil.rmtree("../" + ofile + "/" + tag)
 			readyDir(ofile, tag)
 		except OSError:
@@ -505,5 +509,5 @@ def PrintTimeUpdate(done, total, time0):
     repeat_print(('%i hrs, %i mins, %i s remaining.' %remaining(done, total, time0)))
 
 def PrintCompletedTime(time0):
-    print '\ncompleted in %i hrs, %i mins, %i s' %hms(time.time()-time0)
+    print('\ncompleted in %i hrs, %i mins, %i s' %hms(time.time()-time0))
 

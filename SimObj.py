@@ -121,5 +121,5 @@ class SimObj(object):
             # output state of dynamical variables
             solver_.DataDrop(self.frames, self.ofile)
         if text:
-            print '\nsim completed in %i hrs, %i mins, %i s' %u.hms(time.time()-self.time0)
-            print "output: ", self.ofile
+            print('\nsim completed in %i hrs, %i mins, %i s' %u.hms(time.time()-self.time0))
+            print("output: ", self.ofile)

@@ -87,7 +87,7 @@ def CheckRedundant(signature, checkDir):
 
     # check if this sim has already been run
     if os.path.isdir("../" + checkDir + "/psi" + tag) and os.path.isdir("../" + checkDir + "/Num" + tag):
-        print "\nspecial Hilbert space already simulated, copying data..."
+        print("\nspecial Hilbert space already simulated, copying data...")
         redundant = True 
 
         try:
@@ -260,8 +260,8 @@ def RunTerm(sign):
 def main():
     m.time0 = time.time() # record the simulation 
 
-    print 'initialization completed in %i hrs, %i mins, %i s' %u.hms(time.time()-m.time0)
-    print "begining sim", ofile
+    print('initialization completed in %i hrs, %i mins, %i s' %u.hms(time.time()-m.time0))
+    print("begining sim", ofile)
 
     # ------------ step 1 --------------- #
     DNs = GetDNs() # find the term expressed as differences from the expectation values
@@ -296,7 +296,7 @@ def main():
     m.done = 0
 
     # -------------- step 3 ------------- #
-    print "running %i terms on %i cpus" %(len(m.H_sp), mp.cpu_count())
+    print("running %i terms on %i cpus" %(len(m.H_sp), mp.cpu_count()))
 
     # simulate each special Hilbert space in parallel
     pool = mp.Pool(mp.cpu_count())
@@ -308,13 +308,13 @@ def main():
     tags_ = np.array(m.tags)
     np.save("../Data/" + ofile + "/" + "tags" + ".npy", tags_)
 
-    print "\nbegining data interpretation"
+    print("\nbegining data interpretation")
 
     for i in range(len(dIs)):
         dIs[i].main(ofile, tags_)
-    print 'analysis completed in %i hrs, %i mins, %i s' %u.hms(time.time()-time1)
+    print('analysis completed in %i hrs, %i mins, %i s' %u.hms(time.time()-time1))
 
-    print 'script completed in %i hrs, %i mins, %i s' %u.hms(time.time()-m.time0)
+    print('script completed in %i hrs, %i mins, %i s' %u.hms(time.time()-m.time0))
     u.ding()
 
 
