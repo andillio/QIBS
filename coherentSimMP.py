@@ -311,7 +311,7 @@ def main():
     #pool.map(RunTerm, m.H_sp.keys()) #OLD
     start = time.time()
     for key in yt.parallel_objects(m.H_sp.keys(),0):
-        print("Doing", key)
+        print("\nDoing", key)
         sys.stdout.flush()
         RunTerm(key)
 
