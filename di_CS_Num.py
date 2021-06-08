@@ -140,7 +140,7 @@ def SetDicts():
 
     # start by constructing the total hilbert space maps
     # for state in the initial super position
-    print len(fo.tags)
+    print(len(fo.tags))
 
     for tag_ in fo.tags:
 
@@ -178,11 +178,11 @@ def main(name, tags):
     fo.fileNames_psi = u.getNamesInds('Data/' + name + "/" + "psi" + tags[0])
 
     fig, t, Num = makeFig(tags)
-    print Num.sum(axis = 0)[0], Num.sum(axis = 0)[-1]
+    print(Num.sum(axis = 0)[0], Num.sum(axis = 0)[-1])
     SaveStuff(t, Num)
     fig.savefig("../Figs/" + name + "_Num.pdf",bbox_inches = 'tight')
-    print 'completed in %i hrs, %i mins, %i s' %u.hms(time.time()-time0)
-    print "output: ", "../Data/" + name + "_Num.pdf"
+    print('completed in %i hrs, %i mins, %i s' %u.hms(time.time()-time0))
+    print("output: ", "../Data/" + name + "_Num.pdf")
 
 if __name__ == "__main__":
     tags = np.load("../Data/" + simName + "/tags.npy")

@@ -166,8 +166,8 @@ class QuantObj(object):
         N_m = len(self.IC) # number of modes
 
         # express k in base N_m
-        ind1 = k / N_m**2 # index on first operator, b
-        ind2 = (k%N_m**2) / N_m # index on second operator, b
+        ind1 = k // N_m**2 # index on first operator, b
+        ind2 = (k%N_m**2) // N_m # index on second operator, b
         ind3 = k%N_m # a
         ind4 = ind1 + ind2 - ind3 # a
 
@@ -215,7 +215,7 @@ class QuantObj(object):
             return W, self.tupleToInd[np_f]
         else:
             # this shouldn't happen
-            print "exited special hilbert space", np_f
+            print("exited special hilbert space", np_f)
             return 0, 0
         
 

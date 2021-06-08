@@ -332,6 +332,7 @@ def getMetaKno(name, **kwargs):
 				else:
 					metaParams[key_] = float(number)
 
+	f.close()
 	return metaParams
 
 # gets the names of files in the given directory organized by time stamp (ascending)

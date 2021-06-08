@@ -1,0 +1,363 @@
+no change     /oak/stanford/orgs/kipac/users/pizza/conda/condabin/conda
+no change     /oak/stanford/orgs/kipac/users/pizza/conda/bin/conda
+no change     /oak/stanford/orgs/kipac/users/pizza/conda/bin/conda-env
+no change     /oak/stanford/orgs/kipac/users/pizza/conda/bin/activate
+no change     /oak/stanford/orgs/kipac/users/pizza/conda/bin/deactivate
+no change     /oak/stanford/orgs/kipac/users/pizza/conda/etc/profile.d/conda.sh
+no change     /oak/stanford/orgs/kipac/users/pizza/conda/etc/fish/conf.d/conda.fish
+no change     /oak/stanford/orgs/kipac/users/pizza/conda/shell/condabin/Conda.psm1
+no change     /oak/stanford/orgs/kipac/users/pizza/conda/shell/condabin/conda-hook.ps1
+no change     /oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/site-packages/xontrib/conda.xsh
+no change     /oak/stanford/orgs/kipac/users/pizza/conda/etc/profile.d/conda.csh
+no change     /home/users/pizza/.bashrc
+No action taken.
+
+CommandNotFoundError: Your shell has not been properly configured to use 'conda activate'.
+To initialize your shell, run
+
+    $ conda init <SHELL_NAME>
+
+Currently supported shells are:
+  - bash
+  - fish
+  - tcsh
+  - xonsh
+  - zsh
+  - powershell
+
+See 'conda init --help' for more information and options.
+
+IMPORTANT: You may need to close and restart your shell after running 'conda init'.
+
+
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+/oak/stanford/orgs/kipac/users/pizza/conda/lib/python3.8/_collections_abc.py:666: MatplotlibDeprecationWarning: The global colormaps dictionary is no longer considered public API.
+  self[key]
+[cli_0]: write_line error; fd=11 buf=:cmd=init pmi_version=1 pmi_subversion=1
+:
+system msg for write_line failure : Bad file descriptor
+[cli_0]: Unable to write to PMI_fd
+[cli_0]: write_line error; fd=11 buf=:cmd=get_appnum
+:
+system msg for write_line failure : Bad file descriptor
+Fatal error in PMPI_Init_thread: Other MPI error, error stack:
+MPIR_Init_thread(586): 
+MPID_Init(175).......: channel initialization failed
+MPID_Init(463).......: PMI_Get_appnum returned -1
+[cli_0]: write_line error; fd=11 buf=:cmd=abort exitcode=1093647
+:
+system msg for write_line failure : Bad file descriptor
+[cli_0]: write_line error; fd=11 buf=:cmd=init pmi_version=1 pmi_subversion=1
+:
+system msg for write_line failure : Bad file descriptor
+[cli_0]: Unable to write to PMI_fd
+[cli_0]: write_line error; fd=11 buf=:cmd=get_appnum
+:
+system msg for write_line failure : Bad file descriptor
+Fatal error in PMPI_Init_thread: Other MPI error, error stack:
+MPIR_Init_thread(586): 
+MPID_Init(175).......: channel initialization failed
+MPID_Init(463).......: PMI_Get_appnum returned -1
+[cli_0]: write_line error; fd=11 buf=:cmd=abort exitcode=1093647
+:
+system msg for write_line failure : Bad file descriptor
+[cli_0]: write_line error; fd=11 buf=:cmd=init pmi_version=1 pmi_subversion=1
+:
+system msg for write_line failure : Bad file descriptor
+[cli_0]: Unable to write to PMI_fd
+[cli_0]: write_line error; fd=11 buf=:cmd=get_appnum
+:
+system msg for write_line failure : Bad file descriptor
+Fatal error in PMPI_Init_thread: Other MPI error, error stack:
+MPIR_Init_thread(586): 
+MPID_Init(175).......: channel initialization failed
+MPID_Init(463).......: PMI_Get_appnum returned -1
+[cli_0]: write_line error; fd=11 buf=:cmd=abort exitcode=1093647
+:
+system msg for write_line failure : Bad file descriptor
+[cli_0]: write_line error; fd=11 buf=:cmd=init pmi_version=1 pmi_subversion=1
+:
+system msg for write_line failure : Bad file descriptor
+[cli_0]: Unable to write to PMI_fd
+[cli_0]: write_line error; fd=11 buf=:cmd=get_appnum
+:
+system msg for write_line failure : Bad file descriptor
+Fatal error in PMPI_Init_thread: Other MPI error, error stack:
+MPIR_Init_thread(586): 
+MPID_Init(175).......: channel initialization failed
+MPID_Init(463).......: PMI_Get_appnum returned -1
+[cli_0]: write_line error; fd=11 buf=:cmd=abort exitcode=1093647
+:
+system msg for write_line failure : Bad file descriptor
+[cli_0]: write_line error; fd=11 buf=:cmd=init pmi_version=1 pmi_subversion=1
+:
+system msg for write_line failure : Bad file descriptor
+[cli_0]: Unable to write to PMI_fd
+[cli_0]: write_line error; fd=11 buf=:cmd=get_appnum
+:
+system msg for write_line failure : Bad file descriptor
+Fatal error in PMPI_Init_thread: Other MPI error, error stack:
+MPIR_Init_thread(586): 
+MPID_Init(175).......: channel initialization failed
+MPID_Init(463).......: PMI_Get_appnum returned -1
+[cli_0]: write_line error; fd=11 buf=:cmd=abort exitcode=1093647
+:
+system msg for write_line failure : Bad file descriptor
+[cli_0]: write_line error; fd=11 buf=:cmd=init pmi_version=1 pmi_subversion=1
+:
+system msg for write_line failure : Bad file descriptor
+[cli_0]: Unable to write to PMI_fd
+[cli_0]: write_line error; fd=11 buf=:cmd=get_appnum
+:
+system msg for write_line failure : Bad file descriptor
+Fatal error in PMPI_Init_thread: Other MPI error, error stack:
+MPIR_Init_thread(586): 
+MPID_Init(175).......: channel initialization failed
+MPID_Init(463).......: PMI_Get_appnum returned -1
+[cli_0]: write_line error; fd=11 buf=:cmd=abort exitcode=1093647
+:
+system msg for write_line failure : Bad file descriptor
+[cli_0]: write_line error; fd=11 buf=:cmd=init pmi_version=1 pmi_subversion=1
+:
+system msg for write_line failure : Bad file descriptor
+[cli_0]: Unable to write to PMI_fd
+[cli_0]: write_line error; fd=11 buf=:cmd=init pmi_version=1 pmi_subversion=1
+:
+system msg for write_line failure : Bad file descriptor
+[cli_0]: Unable to write to PMI_fd
+[cli_0]: write_line error; fd=11 buf=:cmd=get_appnum
+:
+system msg for write_line failure : Bad file descriptor
+[cli_0]: write_line error; fd=11 buf=:cmd=get_appnum
+:
+system msg for write_line failure : Bad file descriptor
+Fatal error in PMPI_Init_thread: Other MPI error, error stack:
+MPIR_Init_thread(586): 
+MPID_Init(175).......: channel initialization failed
+MPID_Init(463).......: PMI_Get_appnum returned -1
+[cli_0]: write_line error; fd=11 buf=:cmd=abort exitcode=1093647
+:
+system msg for write_line failure : Bad file descriptor
+Fatal error in PMPI_Init_thread: Other MPI error, error stack:
+MPIR_Init_thread(586): 
+MPID_Init(175).......: channel initialization failed
+MPID_Init(463).......: PMI_Get_appnum returned -1
+[cli_0]: write_line error; fd=11 buf=:cmd=abort exitcode=1093647
+:
+system msg for write_line failure : Bad file descriptor
+[cli_0]: write_line error; fd=11 buf=:cmd=init pmi_version=1 pmi_subversion=1
+:
+system msg for write_line failure : Bad file descriptor
+[cli_0]: Unable to write to PMI_fd
+[cli_0]: write_line error; fd=11 buf=:cmd=get_appnum
+:
+system msg for write_line failure : Bad file descriptor
+[cli_0]: write_line error; fd=11 buf=:cmd=init pmi_version=1 pmi_subversion=1
+:
+system msg for write_line failure : Bad file descriptor
+[cli_0]: Unable to write to PMI_fd
+[cli_0]: write_line error; fd=11 buf=:cmd=get_appnum
+:
+system msg for write_line failure : Bad file descriptor
+Fatal error in PMPI_Init_thread: Other MPI error, error stack:
+MPIR_Init_thread(586): 
+MPID_Init(175).......: channel initialization failed
+MPID_Init(463).......: PMI_Get_appnum returned -1
+[cli_0]: write_line error; fd=11 buf=:cmd=abort exitcode=1093647
+:
+system msg for write_line failure : Bad file descriptor
+Fatal error in PMPI_Init_thread: Other MPI error, error stack:
+MPIR_Init_thread(586): 
+MPID_Init(175).......: channel initialization failed
+MPID_Init(463).......: PMI_Get_appnum returned -1
+[cli_0]: write_line error; fd=11 buf=:cmd=abort exitcode=1093647
+:
+system msg for write_line failure : Bad file descriptor
+--------------------------------------------------------------------------
+Primary job  terminated normally, but 1 process returned
+a non-zero exit code. Per user-direction, the job has been aborted.
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+mpirun detected that one or more processes exited with non-zero status, thus causing
+the job to be terminated. The first process to do so was:
+
+  Process name: [[61473,1],19]
+  Exit code:    15
+--------------------------------------------------------------------------

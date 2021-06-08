@@ -11,10 +11,13 @@ from distutils.dir_util import copy_tree
 from shutil import copyfile
 import datetime
 import FullQuantumObjRetry as FQ 
+import yt; yt.enable_parallelism()
+end = lambda id, start: print(f"Finish {id} in {time.time()-start:.4f} seconds")
+import sys
 # --------------------------------------- #
 
 # --------------- Config Params --------------- #
-r = 4 # scaling parameter
+r = 5 # scaling parameter
 ofile =  "test_r" + str(r)  # name of directory to be created
 # this can be used to restart the simulation if it needs to be stopped for some reason
 # basically it should copy the completed parts of the sim if you specify the old directory
@@ -191,7 +194,6 @@ def FindDN(mu):
 
     lower = np.max([0, mu - sig])
     return [lower - mu, sig]
-
 def GetDNs():
     DN = []
     for i in range(N):
@@ -260,13 +262,16 @@ def RunTerm(sign):
 def main():
     m.time0 = time.time() # record the simulation 
 
-    print('initialization completed in %i hrs, %i mins, %i s' %u.hms(time.time()-m.time0))
     print("begining sim", ofile)
 
     # ------------ step 1 --------------- #
+    start = time.time()
     DNs = GetDNs() # find the term expressed as differences from the expectation values
+    end(0, start)
+
     terms = []
 
+    start = time.time()
     # create a list of terms as list of number eigenstates
     for i in range(len(DNs)):
         IC_ = IC.copy()
@@ -274,11 +279,13 @@ def main():
         for j in range(len(dn)):
             IC_[j] += dn[j]
         terms.append(IC_)
+    end(1, start)
     # ----------------------------------- #
 
     # ----------- step 2 ---------------- #
     # find the special Hilbert spaces (SHS) associated with these terms
     # for each term in the coherent state sum
+    start = time.time()
     for i in range(len(terms)):
         term = terms[i] 
         p = (np.arange(N)*np.array(term)).sum() # identify momentum
@@ -289,6 +296,7 @@ def main():
             m.tags.append(str(signature)) # the tags list is used in data interpretation
         else:
             m.H_sp[signature].append(term) # add this term to the SHS
+    end(3, start)
     # ----------------------------------- #
 
     # these are used for timing
@@ -299,8 +307,15 @@ def main():
     print("running %i terms on %i cpus" %(len(m.H_sp), mp.cpu_count()))
 
     # simulate each special Hilbert space in parallel
-    pool = mp.Pool(mp.cpu_count())
-    pool.map(RunTerm, m.H_sp.keys())
+    #pool = mp.Pool(mp.cpu_count()) #OLD
+    #pool.map(RunTerm, m.H_sp.keys()) #OLD
+    start = time.time()
+    for key in yt.parallel_objects(m.H_sp.keys(),0):
+        print("Doing", key)
+        sys.stdout.flush()
+        RunTerm(key)
+
+    end(4, start)
     # ----------------------------------- #
 
     time1 = time.time()
@@ -316,6 +331,7 @@ def main():
 
     print('script completed in %i hrs, %i mins, %i s' %u.hms(time.time()-m.time0))
     u.ding()
+    sys.stdout.flush()
 
 
 if __name__ == "__main__":
