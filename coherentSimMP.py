@@ -14,12 +14,22 @@ import FullQuantumObjRetry as FQ
 import yt; yt.enable_parallelism()
 end = lambda id, start: print(f"Finish {id} in {time.time()-start:.4f} seconds")
 import sys
-# a test comment
+
 # --------------------------------------- #
 
 # --------------- Config Params --------------- #
 r = 5 # scaling parameter
-ofile =  "test_r" + str(r)  # name of directory to be created
+IC = np.asarray([0,2,2,1,0])*r # initial occupation expectations
+
+name_ = "_("
+for i in range(len(IC)):
+    name_ += str(IC[i])
+    if i != len(IC) - 1:
+        name_ += ","
+
+name_ += ")"
+
+ofile =  "test_r" + str(r) + name_  # name of directory to be created
 # this can be used to restart the simulation if it needs to be stopped for some reason
 # basically it should copy the completed parts of the sim if you specify the old directory
 # you need to make a new directory for the new sim data
@@ -33,7 +43,6 @@ dt = 1e-4 / np.sqrt(r) # simulation timestep
 frames = 300 # how many data drops should there be
 framesteps = int(256 * np.sqrt(r)) # number of timesteps between data drops
 
-IC = np.asarray([0,2,2,1,0])*r # initial occupation expectations
 N = len(IC) # the number of allowed momentum modes
 np.random.seed(1) 
 phi = np.random.uniform(0, 2 * np.pi, N) # field phases
