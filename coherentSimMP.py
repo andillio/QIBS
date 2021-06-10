@@ -336,7 +336,7 @@ def main():
     print("\nbegining data interpretation")
 
     for i in range(len(dIs)):
-        dIs[i].main(ofile, tags_)
+        dIs[i].main(ofile, tags_, plot = False)
     print('analysis completed in %i hrs, %i mins, %i s' %u.hms(time.time()-time1))
 
     print('script completed in %i hrs, %i mins, %i s' %u.hms(time.time()-m.time0))
