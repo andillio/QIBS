@@ -6,7 +6,7 @@ import numpy as np
 import multiprocessing as mp 
 import utils as u
 import os
-import di_CS_Num
+import di_analysis
 from distutils.dir_util import copy_tree
 from shutil import copyfile
 import datetime
@@ -41,7 +41,7 @@ omega0 = 1. # kinetic constant
 lambda0 = 0 # 4-point interaction constant
 C = -.1 / r # long range interaction constant
 
-dIs = [di_CS_Num] # data interpreters
+dIs = [di_analysis] # data interpreters
 # ----------------------------------------- #
 
 # a class used to control the global namespace
