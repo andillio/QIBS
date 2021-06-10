@@ -4,6 +4,7 @@ try:
     import cupy as cp
 except ImportError:
     import numpy as cp
+import numpy as np
 import pylab as pyl 
 import scipy.fftpack as sp
 import time
