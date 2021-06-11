@@ -1,6 +1,9 @@
 import scipy as sp
 import numpy as np 
-import cupy as cp 
+try:
+    import cupy as cp
+except ImportError:
+    import numpy as cp
 import utils as u
 import time
 import sys
@@ -318,3 +321,105 @@ def GetNumExp(psi, indToTuple, tupleToInd, m):
         exp += state_i[m]*np.abs(psi[i])**2
 
     return exp
+
+
+def GetDicts(fo):
+    newIndToTuple = {} # dictionary describing index to tuple mapping for the total hilbert space
+    newTupleToInd = {} # dictionary describing tuple to index mapping -- --
+
+    # start by constructing the total hilbert space maps
+    # for state in the initial super position
+    for tag_ in fo.tags:
+
+        # load its "special" Hilbert space map
+        with open("../Data/" + fo.name + "/" + "indToTuple" + tag_ + ".pkl", 'rb') as f:    
+            indToTuple = pickle.load(f)
+
+        # for state in the special hilbert space
+        for i in range(len(indToTuple)):
+            state_ = indToTuple[i] # get the state
+
+            # add this state to the total hilbert space maps
+            ind_ = len(newIndToTuple) 
+            newIndToTuple[ind_] = state_
+            newTupleToInd[state_] = ind_     
+    
+    fo.tupleToInd = newTupleToInd
+    fo.indToTuple = newIndToTuple
+
+
+def GetPsiAndN(j, fo):
+    psi = np.zeros(len(fo.indToTuple)) + 0j
+    N = np.zeros(( len(fo.indToTuple), fo.N ))
+
+    # for state in the initial super position
+    for tag_ in fo.tags:
+
+        fo.fileNames_psi = u.getNamesInds("Data/" + fo.name + "/" + "psi" + tag_)
+
+        # get the wavefunction for this initial state at the relevent time
+        psi_ = None 
+        psi_ = np.load(fo.fileNames_psi[j])
+
+        # load the correspond "special" hilbert space map
+        with open("../Data/" + fo.name + "/" + "indToTuple" + tag_ + ".pkl", 'rb') as f:    
+            indToTuple_ = pickle.load(f)
+
+        # for each state in the special hilbert space 
+        # add the weight in psi_ to the total wavefunction
+        for i in range(len(indToTuple_)):
+            subState = indToTuple_[i]
+            ind_ = fo.tupleToInd[subState]
+
+            subState_ = np.array(subState)
+
+            psi[ind_] += psi_[i]
+            N[ind_,:] = subState_ 
+
+    N = np.einsum("ij,i->j", N, np.abs(psi)**2 )
+
+    return psi, N
+# sort eigenvalues A
+# using key
+def sortE(key, A):
+	inds = key.argsort()
+	A = A[inds]
+	return A
+
+# calculates the expectation value of a normally ordered operator
+# given a wavefunction, psi
+# object with relevant dictionaries
+# indices on creation operators b
+# indices on annihilation operators a
+def calcOp(psi, fo, b = [], a = []):
+    rval = 0j
+
+    for i in range(len(fo.indToTuple)):
+        psi_i = psi[i]
+        state_i = np.array(fo.indToTuple[i])
+        weight = 1.
+
+        for j in range(len(a)):
+            a_ind = a[j]
+
+            if state_i[a_ind] >= 0:
+                weight *= np.sqrt(state_i[a_ind])
+                state_i[a_ind] -= 1
+            else:
+                weight *= 0.
+
+        for j in range(len(b)):
+            b_ind = b[j]
+
+            if state_i + 1 >= 0:
+                weight *= np.sqrt(state_i[b_ind] + 1)
+                state_i[b_ind] += 1
+            else:
+                weight *= 0
+        
+        if tuple(state_i) in fo.tupleToInd:
+            psi_f = psi[fo.tupleToInd[tuple(state_i)]]
+
+            rval += np.conj(psi_f)*psi_i*weight
+    
+    return rval
