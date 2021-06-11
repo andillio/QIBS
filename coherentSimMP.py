@@ -5,6 +5,7 @@ import time
 import numpy as np
 import multiprocessing as mp 
 import utils as u
+import QUtils as qu
 import os
 import di_analysis
 from distutils.dir_util import copy_tree
@@ -280,7 +281,7 @@ def GetSortedKeys(sigs):
     ns = np.array(ns)
     keys = np.array(keys)
 
-    sortedKeys = sortE(ns, keys)
+    sortedKeys = qu.sortE(ns, keys)
 
     rkeys = []
     for i in range(len(sortedKeys)-1,-1,-1):
