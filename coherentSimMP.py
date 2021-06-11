@@ -341,7 +341,7 @@ def main():
     #pool = mp.Pool(mp.cpu_count()) #OLD
     #pool.map(RunTerm, m.H_sp.keys()) #OLD
     start = time.time()
-    for key in yt.parallel_objects( GetSortedKeys(m.H_sp.keys()) ,0):
+    for key in yt.parallel_objects( GetSortedKeys(m.H_sp.keys()), 0, dynamic=True):
         print("\nDoing", key)
         sys.stdout.flush()
         RunTerm(key)
