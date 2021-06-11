@@ -269,6 +269,26 @@ def RunTerm(sign):
     return 1
 
 
+def GetSortedKeys(sigs):
+    ns = []
+    keys = []
+
+    for key_ in sigs.keys():
+        ns.append(key_[0])
+        keys.append(key_)
+
+    ns = np.array(ns)
+    keys = np.array(keys)
+
+    sortedKeys = sortE(ns, keys)
+
+    rkeys = []
+    for i in range(len(sortedKeys)-1,-1,-1):
+        rkeys.append(tuple(sortedKeys[i]))
+
+    return rkeys
+
+
 def main():
     m.time0 = time.time() # record the simulation 
 
@@ -320,7 +340,7 @@ def main():
     #pool = mp.Pool(mp.cpu_count()) #OLD
     #pool.map(RunTerm, m.H_sp.keys()) #OLD
     start = time.time()
-    for key in yt.parallel_objects(m.H_sp.keys(),0):
+    for key in yt.parallel_objects( GetSortedKeys(m.H_sp.keys()) ,0):
         print("\nDoing", key)
         sys.stdout.flush()
         RunTerm(key)
