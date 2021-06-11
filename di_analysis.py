@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import pickle 
 from numpy import linalg as LA 
 import scipy.stats as st 
+import yt; yt.enable_parallelism()
 
 simName = "FNS_r1"
 decimate = 2
@@ -108,8 +109,17 @@ def analyzeTimeStep(i):
 
 def analyze():
     print("Starting di_analysis...")
-    pool = mp.Pool(mp.cpu_count())
-    outputs = pool.map(analyzeTimeStep, range(0, len(fo.fileNames_psi), decimate) )
+    #pool = mp.Pool(mp.cpu_count())
+    #outputs = pool.map(analyzeTimeStep, range(0, len(fo.fileNames_psi), decimate) )
+    outputs = {}
+
+    for sto, key in yt.parallel_objects( range(0, len(fo.fileNames_psi), decimate) , 0, storage=outputs):
+        sys.stdout.flush()
+        outputs_ = analyzeTimeStep(key)
+
+        sto.result = outputs_
+        sto.result_id = key
+
     print("Data analyzed...")
 
     n_out = len(outputs)
@@ -122,8 +132,9 @@ def analyze():
     a = np.zeros((n_out,fo.N)) + 0j
     Q = np.zeros(n_out) + 0j
 
-    for i in range(n_out):
-        t_, N_, M_, eigs_, aa_, a_, Q_ = outputs[i]
+    for i in range(len(outputs.keys()) ):
+        key_ = outputs.keys()[i]
+        t_, N_, M_, eigs_, aa_, a_, Q_ = outputs[key_]
         t[i] = t_
         N[i] = N_ 
         M[i] = M_ 
