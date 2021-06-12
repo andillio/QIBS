@@ -86,6 +86,8 @@ def Getaa(psi):
 def analyzeTimeStep(i):
     psi, N = qu.GetPsiAndN(i, fo)
 
+    norm = np.sum(np.abs(psi)**2)
+
     # time stamp
     t = fo.dt*fo.framsteps*(i+1)
 
@@ -104,7 +106,7 @@ def analyzeTimeStep(i):
     # get Q param
     Q = np.sum( N - a*np.conj(a) ) / np.sum(fo.IC)
 
-    return t, N, M, eigs, aa, a, Q
+    return t, N, M, eigs, aa, a, Q, norm 
 
 
 def analyze():
@@ -131,10 +133,11 @@ def analyze():
     aa = np.zeros((n_out, fo.N, fo.N)) + 0j
     a = np.zeros((n_out,fo.N)) + 0j
     Q = np.zeros(n_out) + 0j
+    norm = np.zeros(n_out) + 0j
 
     for i in range(len(outputs.keys()) ):
         key_ = outputs.keys()[i]
-        t_, N_, M_, eigs_, aa_, a_, Q_ = outputs[key_]
+        t_, N_, M_, eigs_, aa_, a_, Q_, norm_ = outputs[key_]
         t[i] = t_
         N[i] = N_ 
         M[i] = M_ 
@@ -142,6 +145,12 @@ def analyze():
         aa[i] = aa_ 
         a[i] = a_ 
         Q[i] = Q_ 
+        norm[i] = norm_
+    
+    print("min norm: %f\nmax norm: %f" %(np.min(norm), np.max(norm)) )
+
+    if np.abs(np.min(norm) - 1) > .05 or np.abs(np.max(norm) - 1) > .05:
+        print("WARNING: evolution was not unitary, consider a smaller timestep.") 
 
     return t, N, M, eigs, aa, a, Q
 
