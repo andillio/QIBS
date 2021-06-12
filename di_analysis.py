@@ -9,6 +9,7 @@ import pickle
 from numpy import linalg as LA 
 import scipy.stats as st 
 import yt; yt.enable_parallelism()
+import sys
 
 simName = "FNS_r1"
 decimate = 2
