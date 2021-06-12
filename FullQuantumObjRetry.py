@@ -29,7 +29,7 @@ class QuantObj(object):
 
         # Hamiltonian operators
         self.H = None 
-        self.H2 = None # square Hamiltonian operator
+        #self.H2 = None # square Hamiltonian operator
 
         # Momentum for each mode
         self.E_m = None
@@ -43,6 +43,7 @@ class QuantObj(object):
 
         self.is_dispersion_quadratic = False # is the dispersion relation quadratic (as opposed to linear)
         self.second_Order = True # should I include second order intergration terms
+        self.RK = False # should I use an RK integrator
 
         # keep track of variables
         self.track_psi = False # track the wavefunction
@@ -158,8 +159,8 @@ class QuantObj(object):
         
         # NOTE: For very large Hilbet spaces this may be slower than the whole simulation
         # it may makes sense to use a Runga-Kutta integrator with only H instead
-        if self.second_Order:
-            self.H2 = self.opMul(self.H, self.H) # get second order term
+        #if self.second_Order:
+        #    self.H2 = self.opMul(self.H, self.H) # get second order term
 
 
     def GetWeight(self,np_i, k, s):
@@ -302,13 +303,17 @@ class QuantObj(object):
             return (np.conj(psi_)*N*psi).sum()
         return (cp.conj(psi_)*N*psi).sum()
 
+    def df_dt(self,dt,s,psi):
+        pass
+
     def Update(self, dt, s):
         
         # integrate Schroedinger's equation
         for i in range(s.framesteps):
             
             if self.second_Order:
-                self.psi -= 1j*dt*self.stateMul(self.H,self.psi) + dt*dt*self.stateMul(self.H2,self.psi)/2.
+                #self.psi -= 1j*dt*self.stateMul(self.H,self.psi) + dt*dt*self.stateMul(self.H2,self.psi)/2.
+                self.psi -= 1j*dt*self.stateMul(self.H,self.psi) + dt*dt*self.stateMul(self.H,self.stateMul(self.H,self.psi))/2.
             else:
                 self.psi -= 1j*dt*self.stateMul(self.H,self.psi)
                     
