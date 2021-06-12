@@ -12,7 +12,7 @@ from distutils.dir_util import copy_tree
 from shutil import copyfile
 import datetime
 import FullQuantumObjRetry as FQ 
-import yt; yt.enable_parallelism()
+import yt; yt.enable_parallelism();
 end = lambda id, start: print(f"Finish {id} in {time.time()-start:.4f} seconds")
 import sys
 
@@ -341,7 +341,7 @@ def main():
     #pool = mp.Pool(mp.cpu_count()) #OLD
     #pool.map(RunTerm, m.H_sp.keys()) #OLD
     start = time.time()
-    for key in yt.parallel_objects( GetSortedKeys(m.H_sp.keys()), 0, dynamic=True):
+    for key in yt.parallel_objects( GetSortedKeys(m.H_sp), 0, dynamic=True):
         print("\nDoing", key)
         sys.stdout.flush()
         RunTerm(key)
