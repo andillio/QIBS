@@ -335,7 +335,7 @@ def main():
     m.done = 0
 
     # -------------- step 3 ------------- #
-    print("running %i terms on %i cpus" %(len(m.H_sp), mp.cpu_count()))
+    print("running %i sp Hilbert spaces on %i cpus" %(len(m.H_sp), mp.cpu_count()))
 
     # simulate each special Hilbert space in parallel
     #pool = mp.Pool(mp.cpu_count()) #OLD
