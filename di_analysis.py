@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import pickle 
 from numpy import linalg as LA 
 import scipy.stats as st 
+import sys
 import yt; yt.enable_parallelism()
 
 simName = "FNS_r1"
