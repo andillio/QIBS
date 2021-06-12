@@ -9,6 +9,7 @@ import time
 import sys
 import scipy.linalg as sl
 import numpy.linalg as nl 
+import pickle
 eps = sys.float_info.epsilon
 
 def Psi2Rho(psi):
