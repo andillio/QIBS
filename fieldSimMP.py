@@ -12,6 +12,9 @@ from distutils.dir_util import copy_tree
 from shutil import copyfile
 import datetime
 import FullQuantumObjRetry as FQ 
+import yt; yt.enable_parallelism();
+end = lambda id, start: print(f"Finish {id} in {time.time()-start:.4f} seconds")
+import sys
 # --------------------------------------- #
 
 # --------------- Config Params --------------- #
@@ -314,6 +317,25 @@ def RunTerm(sign):
     return 1
 
 
+def GetSortedKeys(sigs):
+    ns = []
+    keys = []
+
+    for key_ in sigs.keys():
+        ns.append(key_[0])
+        keys.append(key_)
+
+    ns = np.array(ns)
+    keys = np.array(keys)
+
+    sortedKeys = qu.sortE(ns, keys)
+
+    rkeys = []
+    for i in range(len(sortedKeys)-1,-1,-1):
+        rkeys.append(tuple(sortedKeys[i]))
+
+    return rkeys
+
 def main():
     m.time0 = time.time() # record the simulation 
 
@@ -324,16 +346,23 @@ def main():
     terms = GetTerms()
     # ----------------------------------- #
 
-    # these are used for timing
+#    these are used for timing
     m.total = len(m.H_sp.keys())
     m.done = 0
 
     # -------------- step 3 ------------- #
-    print( "running %i special Hilbert spaces on %i cpus" %(len(m.H_sp), mp.cpu_count()))
+    print("running %i sp Hilbert spaces on %i cpus" %(len(m.H_sp), mp.cpu_count()))
 
     # simulate each special Hilbert space in parallel
-    pool = mp.Pool(mp.cpu_count())
-    pool.map(RunTerm, m.H_sp.keys())
+    #pool = mp.Pool(mp.cpu_count()) #OLD
+    #pool.map(RunTerm, m.H_sp.keys()) #OLD
+    start = time.time()
+    for key in yt.parallel_objects( GetSortedKeys(m.H_sp), 0, dynamic=True):
+        print("\nDoing", key)
+        sys.stdout.flush()
+        RunTerm(key)
+
+    end(4, start)
     # ----------------------------------- #
 
     time1 = time.time()
@@ -341,14 +370,15 @@ def main():
     tags_ = np.array(m.tags)
     np.save("../Data/" + ofile + "/" + "tags" + ".npy", tags_)
 
-    print( "\nbegining data interpretation")
+    print("\nbegining data interpretation")
 
     for i in range(len(dIs)):
-        dIs[i].main(ofile, tags_)
-    print( 'analysis completed in %i hrs, %i mins, %i s' %u.hms(time.time()-time1)
-)
-    print( 'script completed in %i hrs, %i mins, %i s' %u.hms(time.time()-m.time0))
+        dIs[i].main(ofile, tags_, plot = False)
+    print('analysis completed in %i hrs, %i mins, %i s' %u.hms(time.time()-time1))
+
+    print('script completed in %i hrs, %i mins, %i s' %u.hms(time.time()-m.time0))
     u.ding()
+    sys.stdout.flush()
 
 
 if __name__ == "__main__":
