@@ -28,8 +28,8 @@ class QuantObj(object):
         self.Num = None 
 
         # Hamiltonian operators
-        self.H = None 
-        #self.H2 = None # square Hamiltonian operator
+        self.W = None
+        self.inds = None 
 
         # Momentum for each mode
         self.E_m = None
@@ -43,7 +43,6 @@ class QuantObj(object):
 
         self.is_dispersion_quadratic = False # is the dispersion relation quadratic (as opposed to linear)
         self.second_Order = True # should I include second order intergration terms
-        self.RK = False # should I use an RK integrator
 
         # keep track of variables
         self.track_psi = False # track the wavefunction
@@ -130,7 +129,12 @@ class QuantObj(object):
 
         self.Num = np.zeros((N_m, N_s))
 
-        self.H = np.zeros((N_s, N_s)) # the Hamiltonian
+        # key: state_i
+        # value: list of states that are coupled to this state via H 
+        indToInds = {}
+        # key: state_i
+        # value: list of corresponding weights for each state in indToInds
+        indToW = {}
 
         for i in range(N_s):
             tuple_i = self.indToTuple[i] # corresponds to occupations in tuple_i
@@ -143,24 +147,45 @@ class QuantObj(object):
                 # when acting upon the ith state in The Hilber Space
                 self.Num[m, i] = tuple_i[m]
             
-            # kinetic term
-            T = s.omega0 * E_i
+            T = s.omega0 * E_i            
             if self.is_dispersion_quadratic:
                 T = s.omega0 * ((self.E_m**2 / 2.) * np_i).sum() 
 
-            self.H[i,i] += T # add the kinetic term
 
-            # loop over all the interaction terms
+            Inds = [i]
+            Weights = [T]
+
             for k in range(N_m**3):
-                # get the weight and bra index
                 W, j = self.GetWeight(np_i, k, s)
+                
                 if np.abs(W) > 0:
-                    self.H[j,i] += W # add <N_j| H |N_i>
+                    if j in Inds:
+                        indexer = Inds.index(j)
+                        Weights[indexer] += W
+                    else:
+                        Inds.append(j)
+                        Weights.append(W)
+
+            indToInds[i] = Inds
+            indToW[i] = Weights
+
+        largest = 0
+
+        for i in range(len(indToInds)):
+            Inds_ = indToInds[i]
+            if len(Inds_) > largest:
+                largest = len(Inds_)
         
-        # NOTE: For very large Hilbet spaces this may be slower than the whole simulation
-        # it may makes sense to use a Runga-Kutta integrator with only H instead
-        #if self.second_Order:
-        #    self.H2 = self.opMul(self.H, self.H) # get second order term
+        self.W = np.zeros((largest, N_s))
+        self.inds = np.zeros((largest, N_s)).astype(int)
+
+        for i in range(len(indToInds)):
+            inds_ = indToInds[i]
+            W_ = indToW[i]
+            
+            for j in range(len(inds_)):
+                self.W[j,i] = W_[j]
+                self.inds[j,i] = inds_[j]
 
 
     def GetWeight(self,np_i, k, s):
@@ -261,19 +286,17 @@ class QuantObj(object):
         self.psi = cp.asarray(self.psi)
         self.E_m = cp.asarray(self.E_m)
         self.Num = cp.asarray(self.Num)
-        self.H = cp.asarray(self.H)
-        if self.second_Order:
-            self.H2 = cp.asarray(self.H2)
-
+        self.W = cp.asarray(self.W)
+        self.inds = cp.asarray(self.inds)
         self.is_np = False
 
     def ToNUMPY(self):
         self.psi = cp.asnumpy(self.psi)
         self.E_m = cp.asnumpy(self.E_m)
         self.Num = cp.asnumpy(self.Num)
-        self.H = cp.asnumpy(self.H)
-        if self.second_Order:
-            self.H2 = cp.asnumpy(self.H2)
+        self.W = cp.asnumpy(self.W)
+        self.inds = cp.asnumpy(self.inds)
+        self.is_np = True
 
         self.is_np = True
 
@@ -303,8 +326,6 @@ class QuantObj(object):
             return (np.conj(psi_)*N*psi).sum()
         return (cp.conj(psi_)*N*psi).sum()
 
-    def df_dt(self,dt,s,psi):
-        pass
 
     def Update(self, dt, s):
         
@@ -312,10 +333,10 @@ class QuantObj(object):
         for i in range(s.framesteps):
             
             if self.second_Order:
-                #self.psi -= 1j*dt*self.stateMul(self.H,self.psi) + dt*dt*self.stateMul(self.H2,self.psi)/2.
-                self.psi -= 1j*dt*self.stateMul(self.H,self.psi) + dt*dt*self.stateMul(self.H,self.stateMul(self.H,self.psi))/2.
+                dpsi_dt = (self.W * self.psi[self.inds]).sum(axis = 0)
+                self.psi -= 1j*dt*dpsi_dt + dt*dt*(self.W * dpsi_dt[self.inds]).sum(axis = 0)/2.
             else:
-                self.psi -= 1j*dt*self.stateMul(self.H,self.psi)
+                self.psi -= 1j*dt*(self.W * self.psi[self.inds]).sum(axis = 0)
                     
     def ReadyDir(self,ofile):
         if self.track_psi:
