@@ -271,6 +271,26 @@ class QuantObj(object):
             self.psi[ind] += np.sqrt(P)*phase
             
 
+    def SetPsiHS_mn(self, HS, IC, phi):
+        N_s = len(self.indToTuple)
+
+        self.psi = np.zeros(N_s) + 0j
+
+        mn = multinomial(IC.sum(), IC*1./IC.sum())
+
+        for j in range(len(HS)):
+            state_ = tuple(HS[j])
+            ind = self.tupleToInd[state_]
+
+            P = mn.pmf(np.array(state_))
+            phase = 1.
+
+            for i in range(len(state_)):
+                n = state_[i]
+                phase *= np.exp(1j * n * phi[i]) 
+
+            # assign the appropriate phase and amplitude
+            self.psi[ind] += np.sqrt(P)*phase   
 
     
     def SetPsi(self):
