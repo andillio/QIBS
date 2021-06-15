@@ -341,10 +341,11 @@ def main():
     #pool = mp.Pool(mp.cpu_count()) #OLD
     #pool.map(RunTerm, m.H_sp.keys()) #OLD
     start = time.time()
-    for key in yt.parallel_objects( GetSortedKeys(m.H_sp), 0, dynamic=True):
-        print("\nDoing", key)
-        sys.stdout.flush()
-        RunTerm(key)
+    if FindDone() != m.total:
+        for key in yt.parallel_objects( GetSortedKeys(m.H_sp), 0, dynamic=True):
+            print("\nDoing", key)
+            sys.stdout.flush()
+            RunTerm(key)
 
     end(4, start)
     # ----------------------------------- #
@@ -356,9 +357,8 @@ def main():
 
     print("\nbegining data interpretation")
 
-    if yt.is_root():
-        for i in range(len(dIs)):
-            dIs[i].main(ofile, tags_, plot = False)
+    for i in range(len(dIs)):
+        dIs[i].main(ofile, tags_, plot = False)
     print('analysis completed in %i hrs, %i mins, %i s' %u.hms(time.time()-time1))
 
     print('script completed in %i hrs, %i mins, %i s' %u.hms(time.time()-m.time0))

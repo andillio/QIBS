@@ -117,12 +117,15 @@ def analyze():
     #outputs = pool.map(analyzeTimeStep, range(0, len(fo.fileNames_psi), decimate) )
     outputs = {}
 
+    nkeys = len(fo.fileNames_psi)
     for sto, key in yt.parallel_objects( range(0, len(fo.fileNames_psi), decimate) , 0, storage=outputs):
         sys.stdout.flush()
         outputs_ = analyzeTimeStep(key)
 
         sto.result = outputs_
         sto.result_id = key
+
+        print(f"Latest Analyzed: {key} of {nkeys}")
 
     print("Data analyzed...")
 
@@ -137,7 +140,8 @@ def analyze():
     Q = np.zeros(n_out) + 0j
     norm = np.zeros(n_out) + 0j
 
-    for i in range(len(outputs.keys()) ):
+    for i in range(len(outputs.keys())):
+
         key_ = outputs.keys()[i]
         t_, N_, M_, eigs_, aa_, a_, Q_, norm_ = outputs[key_]
         t[i] = t_
