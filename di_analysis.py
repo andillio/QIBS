@@ -270,6 +270,14 @@ def makeSqueezeFig(t, aa, N, a):
 
 
 def SaveStuff(t, Num, M, eigs, aa, a, Q):
+    Num = qu.sortE(t, Num)
+    M = qu.sortE(t, M)
+    eigs = qu.sortE(t, eigs)
+    aa = qu.sortE(t, aa)
+    a = qu.sortE(t, a)
+    Q = qu.sortE(t,Q)
+    t = qu.sortE(t,t)
+
     np.save("../Data/" + fo.name + "/" + "_t" + ".npy", t)
     np.save("../Data/" + fo.name + "/" + "_N" + ".npy", Num)
     np.save("../Data/" + fo.name + "/" + "_M" + ".npy", M)
