@@ -33,7 +33,9 @@ class figObj(object):
         self.fileNames_psi = None
 
         self.indToTuple = None 
-        self.tupleToInd = None    
+        self.tupleToInd = None
+        
+        self.decimate = None
 fo = figObj()
 
 

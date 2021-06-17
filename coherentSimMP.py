@@ -8,6 +8,7 @@ import utils as u
 import QUtils as qu
 import os
 import di_analysis
+import di_analysisLarge
 from distutils.dir_util import copy_tree
 from shutil import copyfile
 import datetime
@@ -52,7 +53,10 @@ omega0 = 1. # kinetic constant
 lambda0 = 0 # 4-point interaction constant
 C = -.1 / r # long range interaction constant
 
-dIs = [di_analysis] # data interpreters
+if r > 5:
+    dIs = [di_analysisLarge] # data interpreters
+else:
+    dIs = [di_analysis] # data interpreters
 # ----------------------------------------- #
 
 # a class used to control the global namespace

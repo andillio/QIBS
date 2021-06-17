@@ -35,6 +35,8 @@ class figObj(object):
 
         self.indToTuple = None 
         self.tupleToInd = None    
+
+        self.decimate = None
 fo = figObj()
 
 
@@ -116,7 +118,7 @@ def analyze():
     outputs = {}
 
     nkeys = len(fo.fileNames_psi)
-    for sto, key in yt.parallel_objects( range(0, len(fo.fileNames_psi), decimate) , 0, storage=outputs):
+    for sto, key in yt.parallel_objects( range(0, len(fo.fileNames_psi), fo.decimate) , 0, storage=outputs):
         sys.stdout.flush()
         outputs_ = analyzeTimeStep(key)
 
@@ -289,6 +291,7 @@ def main(name, tags = [], label = "", decimate = 1, plot = PLOT):
     time0 = time.time()
 
     fo.tags = tags
+    fo.decimate = decimate
 
     setFigObj(name)
 
