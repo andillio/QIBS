@@ -42,8 +42,6 @@ def GetOffDiag(psi):
     
     M = np.zeros((fo.N, fo.N)) + 0j
 
-    time0 = time.time()
-
     for j in range(len(fo.indToTuple)):
         state_j = np.array(fo.indToTuple[j])
         
