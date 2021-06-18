@@ -277,10 +277,6 @@ def analyze():
     steps = len(range(0,len(fo.fileNames_psi), fo.decimate))
 
     for i in range(0,len(fo.fileNames_psi), fo.decimate):
-<<<<<<< HEAD
-=======
-        print(i)
->>>>>>> 088a78cafedc25ad8aba51a027f4b07056e91960
         t_, N_, M_, eigs_, aa_, a_, Q_ = analyzeTimeStep(i)
         t.append(t_)
         N.append(N_)
