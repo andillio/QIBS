@@ -71,7 +71,7 @@ class Meta(object):
         self.H_sp = {}
 
         MakeMetaFile(N = N, dt = dt, frames = frames, framesteps = framesteps, IC = IC,
-            omega0 = omega0, Lamda0 = lambda0)
+            omega0 = omega0, Lamda0 = lambda0, C = C)
 
 
 def MakeMetaFile(**kwargs):
