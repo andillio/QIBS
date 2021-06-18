@@ -12,6 +12,7 @@ import sys
 import yt; yt.enable_parallelism()
 
 simName = "FNS_r1"
+simName = "test_r15_(0,30,30,15,0)"
 decimate = 2
 label = ""
 PLOT = True
@@ -276,7 +277,7 @@ def analyze():
     steps = len(range(0,len(fo.fileNames_psi), fo.decimate))
 
     for i in range(0,len(fo.fileNames_psi), fo.decimate):
-        print i
+        print(i)
         t_, N_, M_, eigs_, aa_, a_, Q_ = analyzeTimeStep(i)
         t.append(t_)
         N.append(N_)
