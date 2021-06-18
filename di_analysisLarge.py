@@ -133,13 +133,13 @@ def get_aa(sig, c_j, state_j, i):
                 indToTuple_ = None 
                 tupleToInd = None
 
-                with open("../Data/" + fo.name + "/" + "indToTuple" + tag_ + ".pkl", 'rb') as f:    
+                with open("../Data/" + fo.name + "/" + "indToTuple" + newTag + ".pkl", 'rb') as f:    
                     indToTuple_ = pickle.load(f)
-                with open("../Data/" + fo.name + "/" + "tupleToInd" + tag_ + ".pkl", 'rb') as f:    
+                with open("../Data/" + fo.name + "/" + "tupleToInd" + newTag + ".pkl", 'rb') as f:    
                     tupleToInd_ = pickle.load(f)
 
                 # load in the psi in a given special Hilbert space
-                fileNames_psi = u.getNamesInds("Data/" + fo.name + "/" + "psi" + tag_)
+                fileNames_psi = u.getNamesInds("Data/" + fo.name + "/" + "psi" + newTag)
                 psi_ = np.load(fileNames_psi[i])
 
                 if tuple(state_i) in tupleToInd_:
@@ -179,13 +179,13 @@ def get_a(sig, c_j, state_j, i):
             indToTuple_ = None 
             tupleToInd = None
 
-            with open("../Data/" + fo.name + "/" + "indToTuple" + tag_ + ".pkl", 'rb') as f:    
+            with open("../Data/" + fo.name + "/" + "indToTuple" + newTag + ".pkl", 'rb') as f:    
                 indToTuple_ = pickle.load(f)
-            with open("../Data/" + fo.name + "/" + "tupleToInd" + tag_ + ".pkl", 'rb') as f:    
+            with open("../Data/" + fo.name + "/" + "tupleToInd" + newTag + ".pkl", 'rb') as f:    
                 tupleToInd_ = pickle.load(f)
 
             # load in the psi in a given special Hilbert space
-            fileNames_psi = u.getNamesInds("Data/" + fo.name + "/" + "psi" + tag_)
+            fileNames_psi = u.getNamesInds("Data/" + fo.name + "/" + "psi" + newTag)
             psi_ = np.load(fileNames_psi[i])
 
             if tuple(state_i) in tupleToInd_:
