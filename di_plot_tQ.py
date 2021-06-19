@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np 
 import utils as u
 
-simNames = ["Gr_r1","Gr_r2","Gr_r3","Gr_r4", "Gr_r5"]
+simNames = ["Gr_r1", "Gr_r5"]
 t_dyn = 1./np.sqrt(.1*5)
 
 
@@ -20,12 +20,12 @@ def makeFig():
     fo.ax1.set_xlabel(r"$n_{tot}$")
     fo.ax1.set_ylabel(r"$t_{br} \, [ t_{d}]$")
 
-def PlotStuff(simName, color, ax, r):
+def PlotStuff(simName, color, ax):
 
-    n = r*5
+    n = np.abs(np.sum(np.load("../Data/" + simName + "/_N.npy")[0]))
 
-    t = np.load("Data/" + simName + "/_t.npy")
-    Q = np.load("Data/" + simName + "/_Q.npy")
+    t = np.load("../Data/" + simName + "/_t.npy")
+    Q = np.load("../Data/" + simName + "/_Q.npy").real
 
     t_br = np.interp(.15, Q, t) / t_dyn
 
@@ -40,7 +40,7 @@ def PlotList(names,t_br, n, color, label, ax):
 
     t_dyn = 0.
     for i in range(len(names)):
-        t_, n_, t_dyn = PlotStuff(names[i], color, ax, i+1)
+        t_, n_, t_dyn = PlotStuff(names[i], color, ax)
         t_br.append(t_)
         t_br_.append(t_)
         n.append(n_)
@@ -61,4 +61,4 @@ if __name__ == "__main__":
     t_br = []
     n = []
 
-    t_dyn = PlotList(simNames,t_br, n, 'bo', r'CoherentState', fo.ax1)
+    PlotList(simNames,t_br, n, 'bo', r'CoherentState', fo.ax1)

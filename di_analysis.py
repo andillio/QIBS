@@ -12,7 +12,7 @@ import sys
 import yt; yt.enable_parallelism()
 import sys
 
-simName = "FNS_r1"
+simName = "Gr_r2"
 decimate = 2
 label = ""
 PLOT = True
@@ -125,7 +125,7 @@ def analyze():
         sto.result = outputs_
         sto.result_id = key
 
-        print(f"Latest Analyzed: {key} of {nkeys}")
+        print("Latest Analyzed: %i of %i" %(key, nkeys))
 
     print("Data analyzed...")
 
@@ -314,4 +314,4 @@ if __name__ == "__main__":
         fo.tags = np.load("../Data/" + simName + "/tags.npy")
     except IOError:
         fo.tags = [""]
-    main(simName, fo.tags)
+    main(simName, fo.tags, decimate=decimate)
