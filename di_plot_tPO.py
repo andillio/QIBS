@@ -3,7 +3,7 @@ import numpy as np
 import utils as u
 import QUtils as qu
 
-simNames = ["Gr_r1","Gr_r2","Gr_r3", "Gr_r4","Gr_r5", "Gr_r6", "Gr_r7", 
+simNames = ["Gr_r1","Gr_r3", "Gr_r4","Gr_r5", "Gr_r6", "Gr_r7", 
 "Gr_r8", "Gr_r9", "Gr_r10"]
 t_dyn = 1./np.sqrt(.1*5)
 
@@ -26,12 +26,14 @@ def PlotStuff(simName, color, ax):
     n = np.abs(np.sum(np.load("../Data/" + simName + "/_N.npy")[0]))
 
     t = np.load("../Data/" + simName + "/_t.npy")
-    Q = np.load("../Data/" + simName + "/_Q.npy").real
+    lams = np.load("../Data/" + simName + "/_eigs.npy")
 
-    Q = qu.sortE(t,Q)
+    lams = qu.sortE(t,lams)
     t = qu.sortE(t,t)
 
-    t_br = np.interp(.15, Q, t) / t_dyn
+    Q = np.abs(1. - lams[:,-1]/n)
+
+    t_br = np.interp(.1, Q, t) / t_dyn
 
     ax.plot([n],[t_br],color)
 
@@ -69,5 +71,5 @@ if __name__ == "__main__":
     PlotList(simNames,t_br, n, 'bo', r'CoherentState', fo.ax1)
 
     plt.subplots_adjust(wspace=.0, hspace=0.)
-    plt.savefig("../Figs/breaktimesQ.pdf", bbox_inches = "tight")
+    plt.savefig("../Figs/breaktimesPO.pdf", bbox_inches = "tight")
     plt.show()

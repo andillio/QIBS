@@ -3,7 +3,7 @@ import numpy as np
 import utils as u
 import QUtils as qu
 
-simNames = ["Gr_r1","Gr_r2","Gr_r3", "Gr_r4","Gr_r5", "Gr_r6", "Gr_r7", 
+simNames = ["Gr_r1","Gr_r3", "Gr_r4","Gr_r5", "Gr_r6", "Gr_r7", 
 "Gr_r8", "Gr_r9", "Gr_r10"]
 t_dyn = 1./np.sqrt(.1*5)
 
@@ -23,15 +23,36 @@ def makeFig():
 
 def PlotStuff(simName, color, ax):
 
-    n = np.abs(np.sum(np.load("../Data/" + simName + "/_N.npy")[0]))
-
     t = np.load("../Data/" + simName + "/_t.npy")
-    Q = np.load("../Data/" + simName + "/_Q.npy").real
+    aa = np.load("../Data/" + simName + "/_aa.npy")
+    a = np.load("../Data/" + simName + "/_a.npy")
+    N = np.load("../Data/" + simName + "/_N.npy")
+    n = np.abs(np.sum(N[0]))
 
-    Q = qu.sortE(t,Q)
+    er = np.zeros((len(t), len(N[0])))
+
+    for i in range(len(t)):
+        t_ = t[i]
+        aa_ = np.diag(aa[i])
+        N_ = N[i]
+        a_ = a[i]
+
+        dbda = N_ - a_*np.conj(a_)
+        dada = aa_ - a_*a_
+
+        er_ = 2*dbda - 2*np.abs(dada) + 1.
+        er[i,:] = er_
+
+    er = qu.sortE(t,er)
+    N = qu.sortE(t,N)
     t = qu.sortE(t,t)
+    sq = er[:,2]#np.sum(er*N, axis = 1)/n
 
-    t_br = np.interp(.15, Q, t) / t_dyn
+    #plt.plot(t,sq)
+    #plt.show()
+
+    argMin = np.argmin(sq)
+    t_br = t[argMin]
 
     ax.plot([n],[t_br],color)
 
