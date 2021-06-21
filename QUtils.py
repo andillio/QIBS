@@ -387,6 +387,13 @@ def sortE(key, A):
 	A = A[inds]
 	return A
 
+# sorts the eigenvectors A
+# using key
+def sortVects(key, A):
+	inds = key.argsort()
+	A = A[:,inds]
+	return A
+
 # calculates the expectation value of a normally ordered operator
 # given a wavefunction, psi
 # object with relevant dictionaries
