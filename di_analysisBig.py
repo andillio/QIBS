@@ -71,7 +71,7 @@ def setFigObj(name, decimate):
     fo.fileNames_psi = u.getNamesInds('Data/' + name + "/" + "psi" + fo.tags[0])
 
 
-def offDiag(sig, c_j, state_j, i):
+def offDiag(sig, psi_j, indToTuple_j, i):
 
     M = np.zeros((fo.N, fo.N)) + 0j
 
@@ -79,10 +79,6 @@ def offDiag(sig, c_j, state_j, i):
     for b in range(fo.N):  
         # annihilation op on mode a 
         for a in range(b+1, fo.N):
-
-            state_i = state_j.copy()
-            state_i[a] = state_j[a] - 1
-            state_i[b] = state_j[b] + 1
 
             new_p = sig[1] + b - a
             newsig = (sig[0], new_p)
@@ -99,28 +95,34 @@ def offDiag(sig, c_j, state_j, i):
                 fileNames_psi = u.getNamesInds("Data/" + fo.name + "/" + "psi" + tag_)
                 psi_ = np.load(fileNames_psi[i])
 
-                if tuple(state_i) in tupleToInd_:
-                    i_ = tupleToInd_[ tuple(state_i) ]
-                    val_ = c_j
-                    val_ *= np.sqrt(state_j[b] + 1)
-                    val_ *= np.sqrt(state_j[a])
-                    val_ *= np.conj(psi_[i_])
+                for j in range(len(psi_j)):
+                    c_j = psi_j[j]
+                    state_j = np.array(indToTuple_j[j])
 
-                    M[b,a] += val_ 
-                    M[a,b] += np.conj(val_)
+                    state_i = state_j.copy()
+                    state_i[a] = state_j[a] - 1
+                    state_i[b] = state_j[b] + 1
+
+
+                    if tuple(state_i) in tupleToInd_:
+                        i_ = tupleToInd_[ tuple(state_i) ]
+                        val_ = c_j
+                        val_ *= np.sqrt(state_j[b] + 1)
+                        val_ *= np.sqrt(state_j[a])
+                        val_ *= np.conj(psi_[i_])
+
+                        M[b,a] += val_ 
+                        M[a,b] += np.conj(val_)
     
     return M
                 
 
-def get_aa(sig, c_j, state_j, i):
+def get_aa(sig, psi_j, indToTuple_j, i):
 
     aa = np.zeros((fo.N, fo.N)) + 0j
 
     for a1 in range(fo.N):
         for a2 in range(a1,fo.N):
-            state_i = state_j.copy()
-            state_i[a1] = state_i[a1] - 1
-            state_i[a2] = state_i[a2] - 1            
 
             new_p = sig[1] - a1 - a2
             newsig = (sig[0] - 2, new_p)
@@ -137,34 +139,40 @@ def get_aa(sig, c_j, state_j, i):
                 fileNames_psi = u.getNamesInds("Data/" + fo.name + "/" + "psi" + newTag)
                 psi_ = np.load(fileNames_psi[i])
 
-                if tuple(state_i) in tupleToInd_:
-                    i_ = tupleToInd_[ tuple(state_i) ]
-                    val_ = c_j
-                    if a1 != a2:
-                        val_ *= np.sqrt(state_j[a1])
-                        val_ *= np.sqrt(state_j[a2])
-                        val_ *= np.conj(psi_[i_])
+                for j in range(len(psi_j)):
+                    c_j = psi_j[j]
+                    state_j = np.array(indToTuple_j[j])
 
-                        aa[a1,a2] += val_ 
-                        aa[a1,a2] += val_
+                    state_i = state_j.copy()
+                    state_i[a1] = state_i[a1] - 1
+                    state_i[a2] = state_i[a2] - 1            
 
-                    else:
-                        val_ *= np.sqrt(state_j[a1])
-                        val_ *= np.sqrt(state_j[a2]-1)
-                        val_ *= np.conj(psi_[i_])
 
-                        aa[a1,a2] += val_ 
+                    if tuple(state_i) in tupleToInd_:
+                        i_ = tupleToInd_[ tuple(state_i) ]
+                        val_ = c_j
+                        if a1 != a2:
+                            val_ *= np.sqrt(state_j[a1])
+                            val_ *= np.sqrt(state_j[a2])
+                            val_ *= np.conj(psi_[i_])
+
+                            aa[a1,a2] += val_ 
+                            aa[a1,a2] += val_
+
+                        else:
+                            val_ *= np.sqrt(state_j[a1])
+                            val_ *= np.sqrt(state_j[a2]-1)
+                            val_ *= np.conj(psi_[i_])
+
+                            aa[a1,a2] += val_ 
     return aa
 
 
-def get_a(sig, c_j, state_j, i):
+def get_a(sig, psi_j, indToTuple_j, i):
 
     a = np.zeros(fo.N) + 0j
 
     for a1 in range(fo.N):
-        state_i = state_j.copy()
-        state_i[a1] = state_i[a1] - 1
-
         new_p = sig[1] - a1
         newsig = (sig[0] - 1, new_p)
 
@@ -180,14 +188,36 @@ def get_a(sig, c_j, state_j, i):
             fileNames_psi = u.getNamesInds("Data/" + fo.name + "/" + "psi" + newTag)
             psi_ = np.load(fileNames_psi[i])
 
-            if tuple(state_i) in tupleToInd_:
-                i_ = tupleToInd_[ tuple(state_i) ]
-                val_ = c_j
-                val_ *= np.sqrt(state_j[a1])
-                val_ *= np.conj(psi_[i_])
-                a[a1] += val_
+            for j in range(len(psi_j)):
+                c_j = psi_j[j]
+                state_j = np.array(indToTuple_j[j])
+
+                state_i = state_j.copy()
+                state_i[a1] = state_i[a1] - 1
+
+                if tuple(state_i) in tupleToInd_:
+                    i_ = tupleToInd_[ tuple(state_i) ]
+                    val_ = c_j
+                    val_ *= np.sqrt(state_j[a1])
+                    val_ *= np.conj(psi_[i_])
+                    a[a1] += val_
 
     return a 
+
+def getN(psi_, indToTuple_):
+    N = np.zeros(fo.N)
+
+    for j in range(len(indToTuple_)):
+        subState = np.array(indToTuple_[j])
+
+        c_j = psi_[j]
+
+        if np.abs(c_j)>0:
+
+            N += subState*np.abs(c_j)**2
+
+    return N
+
 
 def analyzeTimeStep(i):
 
@@ -208,29 +238,18 @@ def analyzeTimeStep(i):
         with open("../Data/" + fo.name + "/" + "indToTuple" + tag_ + ".pkl", 'rb') as f:    
             indToTuple_ = pickle.load(f)
 
-        N_ = np.zeros(fo.N)
+        N_ = getN(psi_, indToTuple_)
+
         M_ = np.zeros((fo.N, fo.N)) + 0j
         aa_ = np.zeros((fo.N, fo.N)) + 0j
         a_ = np.zeros(fo.N) + 0j
 
-        #print len(psi_), len(indToTuple_), tag_
+        M_ += np.diag(N_)
+        M_ += offDiag(sig, psi_, indToTuple_, i)
 
-        for j in range(len(indToTuple_)):
-            subState = np.array(indToTuple_[j])
+        aa_ += get_aa(sig, psi_, indToTuple_, i)
 
-            c_j = psi_[j]
-
-            if np.abs(c_j)>0:
-
-                N__ = subState*np.abs(c_j)**2
-                N_ += N__
-
-                M_ += np.diag(N__)
-                M_ += offDiag(sig, c_j, subState, i)
-
-                aa_ += get_aa(sig, c_j, subState, i)
-
-                a_ += get_a(sig, c_j, subState, i)
+        a_ += get_a(sig, psi_, indToTuple_, i)
 
         sto.result = (N_, M_, aa_, a_)
     
