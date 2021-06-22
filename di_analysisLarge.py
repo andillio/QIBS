@@ -89,12 +89,9 @@ def offDiag(sig, c_j, state_j, i):
 
             tag_ = str(newsig)
 
-            if tag_ in fo.tags:
-                indToTuple_ = None 
+            if tag_ in fo.tags: 
                 tupleToInd = None
 
-                with open("../Data/" + fo.name + "/" + "indToTuple" + tag_ + ".pkl", 'rb') as f:    
-                    indToTuple_ = pickle.load(f)
                 with open("../Data/" + fo.name + "/" + "tupleToInd" + tag_ + ".pkl", 'rb') as f:    
                     tupleToInd_ = pickle.load(f)
 
@@ -131,11 +128,8 @@ def get_aa(sig, c_j, state_j, i):
             newTag = str(newsig)
 
             if newTag in fo.tags:
-                indToTuple_ = None 
                 tupleToInd = None
 
-                with open("../Data/" + fo.name + "/" + "indToTuple" + newTag + ".pkl", 'rb') as f:    
-                    indToTuple_ = pickle.load(f)
                 with open("../Data/" + fo.name + "/" + "tupleToInd" + newTag + ".pkl", 'rb') as f:    
                     tupleToInd_ = pickle.load(f)
 
@@ -176,12 +170,9 @@ def get_a(sig, c_j, state_j, i):
 
         newTag = str(newsig)
     
-        if newTag in fo.tags:
-            indToTuple_ = None 
+        if newTag in fo.tags: 
             tupleToInd = None
 
-            with open("../Data/" + fo.name + "/" + "indToTuple" + newTag + ".pkl", 'rb') as f:    
-                indToTuple_ = pickle.load(f)
             with open("../Data/" + fo.name + "/" + "tupleToInd" + newTag + ".pkl", 'rb') as f:    
                 tupleToInd_ = pickle.load(f)
 

@@ -22,9 +22,11 @@ def makeFig():
     fo.ax1 = axs[0]
     fo.ax2 = axs[1]
 
+    fo.ax1.set_xticklabels([])
+
     fo.ax2.set_xlabel(r"$n_{tot}$")
     fo.ax1.set_ylabel(r"$t_{br} \, [ t_{d}]$")
-    fo.ax1.set_ylabel(r"$r_{max}$")
+    fo.ax2.set_ylabel(r"$r_{max}$")
 
 
 def constructSq(a,aa,M):
@@ -48,16 +50,16 @@ def constructSq(a,aa,M):
         for k in range(N):
             
             k_ = (-1*k -1)%N
-            xi_k = np.conj(xi_p[i,k_])
-            #xi_k = xi_p[i,k]
+            #xi_k = np.conj(xi_p[i,k_])
+            xi_k = xi_p[i,k]
 
             aS[i] += xi_k*a[i,k]
 
             for j in range(N):
                 j_ = (-1*j -1)%N
 
-                xi_j = np.conj(xi_p[i,j_])
-                #xi_j = xi_p[i,j]
+                #xi_j = np.conj(xi_p[i,j_])
+                xi_j = xi_p[i,j]
 
                 aaS[i] += xi_k*xi_j*aa[i,k,j]
                 baS[i] += np.conj(xi_k)*xi_j*M[i,k,j]
@@ -114,26 +116,29 @@ def PlotStuff(simName, color, ax, ax2):
 
     ax.plot([n],[t_br],color)
     ax2.plot([n],[r_max],color)
-    ax2.plot([n], [np.log(n**(1/6.))], 'ko')
+    #ax2.plot([n], [np.log(n**(1/6.))], 'ko')
 
-    return t_br, n, t_dyn
+    return t_br, n, t_dyn, np.log(n**(1/6.))
 
 
 def PlotList(names,t_br, n, color, label, ax, ax2):
 
     t_br_, N = [], []
+    rMax = []
 
     t_dyn = 0.
     for i in range(len(names)):
-        t_, n_, t_dyn = PlotStuff(names[i], color, ax, ax2)
+        t_, n_, t_dyn, r_max = PlotStuff(names[i], color, ax, ax2)
         t_br.append(t_)
         t_br_.append(t_)
         n.append(n_)
         N.append(n_)
+        rMax.append(r_max)
 
     N = np.array(N)
     t_br_ = np.array(t_br_)
 
+    ax2.plot(N, rMax, 'k--')
     ax.plot([],[],color,label = label)
     ax.legend()
 
