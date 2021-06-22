@@ -2,10 +2,11 @@ import matplotlib.pyplot as plt
 import numpy as np 
 import utils as u
 import QUtils as qu
+from numpy import linalg as LA 
 
-#simNames = ["Gr_r1","Gr_r2","Gr_r3", "Gr_r4","Gr_r5", "Gr_r6", "Gr_r7", 
-#"Gr_r8", "Gr_r9", "Gr_r10"]
-simNames = ["Sin_h1_r1"]
+simNames = ["Gr_r1","Gr_r2","Gr_r3","Gr_r4","Gr_r5", "Gr_r6", "Gr_r7", 
+"Gr_r8", "Gr_r9", "Gr_r10"]
+#simNames = ["Sin_h1_r1"]
 t_dyn = 1./np.sqrt(.1*5)
 
 class figObj(object):
@@ -25,13 +26,61 @@ def makeFig():
     fo.ax1.set_ylabel(r"$t_{br} \, [ t_{d}]$")
     fo.ax1.set_ylabel(r"$r_{max}$")
 
+
+def constructSq(a,aa,M):
+
+    N = len(a[0])
+    n = np.sum(np.diag(M[0]))
+
+    xi_p = np.zeros( (len(a), N) ) + 0j
+    aaS = np.zeros( len(a) ) + 0j
+    baS = np.zeros( len(a) ) + 0j
+    aS = np.zeros( len(a) ) + 0j
+
+    for i in range(len(a)):
+        M_ = M[i]
+        eigs, psis = LA.eig(M_)
+        psis = qu.sortVects(np.abs(eigs),psis)
+        eigs = qu.sortE(np.abs(eigs),eigs)
+        principle = psis[:,-1]
+        xi_p[i,:] = principle#*np.sqrt(eigs[-1])
+    
+        for k in range(N):
+            
+            k_ = (-1*k -1)%N
+            xi_k = np.conj(xi_p[i,k_])
+            #xi_k = xi_p[i,k]
+
+            aS[i] += xi_k*a[i,k]
+
+            for j in range(N):
+                j_ = (-1*j -1)%N
+
+                xi_j = np.conj(xi_p[i,j_])
+                #xi_j = xi_p[i,j]
+
+                aaS[i] += xi_k*xi_j*aa[i,k,j]
+                baS[i] += np.conj(xi_k)*xi_j*M[i,k,j]
+
+    dbaS = baS - np.conj(aS)*aS
+    daaS = aaS - aS*aS
+
+    return 1 + 2*dbaS - 2*np.abs(daaS)
+
+
+def load(name, t):
+    rval = np.load(name)
+    return qu.sortE(t,rval)
+
 def PlotStuff(simName, color, ax, ax2):
 
     t = np.load("../Data/" + simName + "/_t.npy")
-    aa = np.load("../Data/" + simName + "/_aa.npy")
-    a = np.load("../Data/" + simName + "/_a.npy")
-    N = np.load("../Data/" + simName + "/_N.npy")
+    aa = load("../Data/" + simName + "/_aa.npy",t)
+    a = load("../Data/" + simName + "/_a.npy",t)
+    N = load("../Data/" + simName + "/_N.npy",t)
+    M = load("../Data/" + simName + "/_M.npy",t)
     n = np.abs(np.sum(N[0]))
+    t = qu.sortE(t,t)
 
     er = np.zeros((len(t), len(N[0])))
 
@@ -45,15 +94,18 @@ def PlotStuff(simName, color, ax, ax2):
         dada = aa_ - a_*a_
 
         er_ = 2*dbda - 2*np.abs(dada) + 1.
+        
         er[i,:] = er_
 
     er = qu.sortE(t,er)
     N = qu.sortE(t,N)
     t = qu.sortE(t,t)
-    sq = er[:,2]#np.sum(er*N, axis = 1)/n
+    sq = constructSq(a,aa,M) #er[:,2]#np.sum(er*N, axis = 1)/n
 
-    plt.plot(t,sq)
-    plt.show()
+    #plt.plot(t,sq)
+    #plt.plot([np.min(t), np.max(t)], [1,1])
+    #plt.plot([np.min(t), np.max(t)], [0,0])
+    #plt.show()
 
     argMin = np.argmin(sq)
     t_br = t[argMin]
