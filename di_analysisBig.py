@@ -306,7 +306,7 @@ def analyze():
             start = time.time()
         t_, N_, M_, eigs_, aa_, a_, Q_ = analyzeTimeStep(i)
         if is_root:
-            end(start, "analyzing timestep {i}")
+            end(start, f"analyzing timestep {i}")
 
         t.append(t_)
         N.append(N_)
