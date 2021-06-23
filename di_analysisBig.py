@@ -9,10 +9,12 @@ import pickle
 from numpy import linalg as LA 
 import scipy.stats as st 
 import sys
-import yt; yt.enable_parallelism()
+import yt; yt.enable_parallelism(); is_root = yt.is_root();
+
+end = lambda start, id: print(f"Done with {id} in {time.time()-start:.4f} seconds")
 
 simName = "FNS_r1"
-#simName = "test_r15_(0,30,30,15,0)"
+simName = "test_r15_(0,30,30,15,0)"
 decimate = 2
 label = ""
 PLOT = True
@@ -221,6 +223,7 @@ def getN(psi_, indToTuple_):
 
 def analyzeTimeStep(i):
 
+
     t = fo.dt*fo.framsteps*(i+1)
     outputs = {}
 
@@ -229,14 +232,17 @@ def analyzeTimeStep(i):
         sto.result_id = tag_
         sig = str2sig(tag_)
 
+        #start = time.time()
         # load in the psi in a given special Hilbert space
         fileNames_psi = u.getNamesInds("Data/" + fo.name + "/" + "psi" + tag_)
         psi_ = np.load(fileNames_psi[i])
+        #end(start, "Loading Psi")
 
+        #start = time.time()
         indToTuple_ = None 
-
         with open("../Data/" + fo.name + "/" + "indToTuple" + tag_ + ".pkl", 'rb') as f:    
             indToTuple_ = pickle.load(f)
+        #end(start, "Loading indToTuple")
 
         N_ = getN(psi_, indToTuple_)
 
@@ -244,13 +250,22 @@ def analyzeTimeStep(i):
         aa_ = np.zeros((fo.N, fo.N)) + 0j
         a_ = np.zeros(fo.N) + 0j
 
+        #start = time.time()
         M_ += np.diag(N_)
+        #end(start, "adding diag")
+
+        #start = time.time()
         M_ += offDiag(sig, psi_, indToTuple_, i)
+        #end(start, "adding offdiag")
 
+        #start = time.time()
         aa_ += get_aa(sig, psi_, indToTuple_, i)
+        #end(start, "adding aa")
 
+        #start = time.time()
         a_ += get_a(sig, psi_, indToTuple_, i)
-
+        #end(start, "adding aa")
+        
         sto.result = (N_, M_, aa_, a_)
     
     N = np.zeros(fo.N)
@@ -258,10 +273,9 @@ def analyzeTimeStep(i):
     aa = np.zeros((fo.N, fo.N)) + 0j
     a = np.zeros(fo.N) + 0j
 
+    for i, key_ in enumerate(outputs.keys()):
 
-    for i in range(len(outputs.keys())):
-
-        key_ = outputs.keys()[i]
+        #key_ = outputs.keys()[i]
         N_, M_, aa_, a_ = outputs[key_]
 
         N += N_ 
@@ -287,7 +301,13 @@ def analyze():
     steps = len(range(0,len(fo.fileNames_psi), fo.decimate))
 
     for i in range(0,len(fo.fileNames_psi), fo.decimate):
+
+        if is_root:
+            start = time.time()
         t_, N_, M_, eigs_, aa_, a_, Q_ = analyzeTimeStep(i)
+        if is_root:
+            end(start, "analyzing timestep {i}")
+
         t.append(t_)
         N.append(N_)
         M.append(M_)
@@ -295,7 +315,8 @@ def analyze():
         aa.append(aa_)
         a.append(a_)
         Q.append(Q_)
-        u.repeat_print(('%i hrs, %i mins, %i s remaining.' %u.remaining(i + 1, steps, time0)))
+        if is_root:
+            u.repeat_print(('%i hrs, %i mins, %i s remaining.\n' %u.remaining(i + 1, steps, time0)))
 
     t = np.array(t)
     N = np.array(N)
