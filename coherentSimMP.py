@@ -9,6 +9,7 @@ import QUtils as qu
 import os
 import di_analysis
 import di_analysisLarge
+import di_analysisBig
 from distutils.dir_util import copy_tree
 from shutil import copyfile
 import datetime
@@ -17,9 +18,7 @@ import yt; yt.enable_parallelism();
 end = lambda id, start: print(f"Finish {id} in {time.time()-start:.4f} seconds")
 import sys
 
-# --------------------------------------- #
-
-# --------------- Config Params --------------- #
+# --------------- Simulation Params --------------- #
 r = 5 # scaling parameter
 IC = np.asarray([0,2,2,1,0])*r # initial occupation expectations
 
@@ -54,10 +53,16 @@ lambda0 = 0 # 4-point interaction constant
 C = -.1 / r # long range interaction constant
 
 if r > 5:
-    dIs = [di_analysisLarge] # data interpreters
+    dIs = [di_analysisBig] # data interpreters
 else:
     dIs = [di_analysis] # data interpreters
-# ----------------------------------------- #
+# ----------------------------------------------- #
+
+
+
+
+
+
 
 # a class used to control the global namespace
 class Meta(object):
