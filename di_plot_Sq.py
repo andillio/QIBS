@@ -5,7 +5,7 @@ import QUtils as qu
 from numpy import linalg as LA 
 
 simNames = ["Gr_r1","Gr_r2","Gr_r3","Gr_r4","Gr_r5", "Gr_r6", "Gr_r7", 
-"Gr_r8", "Gr_r9", "Gr_r10"]
+"Gr_r8", "Gr_r9", "Gr_r10", "Gr_r15"]
 #simNames = ["Sin_h1_r1"]
 t_dyn = 1./np.sqrt(.1*5)
 
@@ -25,7 +25,7 @@ def makeFig():
     fo.ax1.set_xticklabels([])
 
     fo.ax2.set_xlabel(r"$n_{tot}$")
-    fo.ax1.set_ylabel(r"$t_{br} \, [ t_{d}]$")
+    fo.ax1.set_ylabel(r"$t_{br} $")
     fo.ax2.set_ylabel(r"$r_{max}$")
 
 
@@ -138,7 +138,8 @@ def PlotList(names,t_br, n, color, label, ax, ax2):
     N = np.array(N)
     t_br_ = np.array(t_br_)
 
-    ax2.plot(N, rMax, 'k--')
+    ax2.plot(N, rMax, 'k--', label = r"Predictions")
+    ax.plot([], [], 'k--', label = r"Prediction")
     ax.plot([],[],color,label = label)
     ax.legend()
 
@@ -152,7 +153,7 @@ if __name__ == "__main__":
     t_br = []
     n = []
 
-    PlotList(simNames,t_br, n, 'bo', r'CoherentState', fo.ax1, fo.ax2)
+    PlotList(simNames,t_br, n, 'bo', r'Coherent state', fo.ax1, fo.ax2)
 
     t_sq = .6/(5*.1)
     #r_max = np.log(n_max**(1./6))
