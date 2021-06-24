@@ -148,6 +148,76 @@ def makePOQFig(t, eigs, Q):
     fig.savefig("../Figs/" + fo.name + "_POQ.pdf",bbox_inches = 'tight')
 
 
+def constructSq(a,aa,M):
+
+    N = len(a[0])
+    n = np.sum(np.diag(M[0]))
+
+    xi_p = np.zeros( (len(a), N) ) + 0j
+    aaS = np.zeros( len(a) ) + 0j
+    baS = np.zeros( len(a) ) + 0j
+    aS = np.zeros( len(a) ) + 0j
+
+    for i in range(len(a)):
+        M_ = M[i]
+        eigs, psis = LA.eig(M_)
+        psis = qu.sortVects(np.abs(eigs),psis)
+        eigs = qu.sortE(np.abs(eigs),eigs)
+        principle = psis[:,-1]
+        xi_p[i,:] = principle#*np.sqrt(eigs[-1])
+    
+        for k in range(N):
+            
+            k_ = (-1*k -1)%N
+            #xi_k = np.conj(xi_p[i,k_])
+            xi_k = xi_p[i,k]
+
+            aS[i] += xi_k*a[i,k]
+
+            for j in range(N):
+                j_ = (-1*j -1)%N
+
+                #xi_j = np.conj(xi_p[i,j_])
+                xi_j = xi_p[i,j]
+
+                aaS[i] += xi_k*xi_j*aa[i,k,j]
+                baS[i] += np.conj(xi_k)*xi_j*M[i,k,j]
+
+    dbaS = baS - np.conj(aS)*aS
+    daaS = aaS - aS*aS
+
+    return 1 + 2*dbaS - 2*np.abs(daaS)
+
+def makeSqueezeFig(t, aa, M, a):
+    sq = constructSq(a, aa, M)
+
+    fig, ax = plt.subplots(figsize = (6,6))
+
+    ax.set_xlabel(r'$t$')
+
+    ax.plot(t, sq)
+
+    ax.text(.5,.9,r'$1 + 2 E[\delta \hat a_S^\dagger \delta \hat a_S ] - 2 |Var[\hat a_S]|$', ha='center', va='center', transform= ax.transAxes, 
+        bbox = {'facecolor': 'white', 'pad': 5})
+
+    ax.plot([0, np.max(t)], [1,1], "r:")
+
+    r_pred = np.log(fo.n**(1/6.))
+    t_pred = .6/(5*.1)
+
+    ax.plot([t_pred], [np.exp(-2*r_pred)], 'ko')
+
+    index = np.argmin(sq)
+
+    ax.plot([t[index]], [sq[index]], 'bo')
+
+    ax.set_xlim(0, np.max(t[sq<2]) )
+    ax.set_ylim(0,2.)
+
+    ax.legend(loc = 'lower right')
+
+    fig.savefig("../Figs/" + fo.name + "_Sq.pdf",bbox_inches = 'tight')
+
 
 def main(name, label = "", plot = PLOT):
     time0 = time.time()
@@ -164,6 +234,7 @@ def main(name, label = "", plot = PLOT):
     if plot:
         u.orientPlot()
         makePOQFig(t, eigs, Q)
+        makeSqueezeFig(t, aa, M, a)
 
     print('completed in %i hrs, %i mins, %i s' %u.hms(time.time()-time0))
 
