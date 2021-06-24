@@ -9,6 +9,7 @@ import QUtils as qu
 import os
 import di_analysis
 import di_analysisLarge
+import di_analysisBig
 from distutils.dir_util import copy_tree
 from shutil import copyfile
 import datetime
@@ -17,9 +18,7 @@ import yt; yt.enable_parallelism();
 end = lambda id, start: print(f"Finish {id} in {time.time()-start:.4f} seconds")
 import sys
 
-# --------------------------------------- #
-
-# --------------- Config Params --------------- #
+# --------------- Simulation Params --------------- #
 r = 5 # scaling parameter
 IC = np.asarray([0,2,2,1,0])*r # initial occupation expectations
 
@@ -54,13 +53,25 @@ lambda0 = 0 # 4-point interaction constant
 C = -.1 / r # long range interaction constant
 
 if r > 5:
-    dIs = [di_analysisLarge] # data interpreters
+    dIs = [di_analysisBig] # data interpreters
 else:
     dIs = [di_analysis] # data interpreters
-# ----------------------------------------- #
+# ----------------------------------------------- #
+
+
+
+
+
+
 
 # a class used to control the global namespace
 class Meta(object):
+
+    """
+    An object that stores all of the simulation metadata, including tags,
+    number of particles, timestep(s), frames, initial conditions, and
+    physical parameters. 
+    """
 
     def __init__(self):
         self.time0 = 0 # sim start time
@@ -70,31 +81,64 @@ class Meta(object):
 
         self.H_sp = {}
 
-        MakeMetaFile(N = N, dt = dt, frames = frames, framesteps = framesteps, IC = IC,
+        self.MakeMetaFile(N = N, dt = dt, frames = frames, framesteps = framesteps, IC = IC,
             omega0 = omega0, Lamda0 = lambda0, C = C)
 
 
-def MakeMetaFile(**kwargs):
-    try:
-        os.mkdir("../Data/" + ofile + "/")
-    except OSError:
-        pass
-    f = open("../Data/" + ofile + "/" + ofile + "Meta.txt", 'w+')
-    f.write("sim start: " + str(datetime.datetime.now()) + '\n\n')
+    def MakeMetaFile(self, **kwargs):
+        
+        try:
+            os.mkdir("../Data/" + ofile + "/")
+        except OSError:
+            pass
+        f = open("../Data/" + ofile + "/" + ofile + "Meta.txt", 'w+')
+        f.write("sim start: " + str(datetime.datetime.now()) + '\n\n')
 
-    for key, value in kwargs.items():
-        f.write(str(key) + ": " + str(value) + '\n')
-    f.write('\n')
+        for key, value in kwargs.items():
+            f.write(str(key) + ": " + str(value) + '\n')
+        f.write('\n')
 
-    f.close()
+        f.close()
 m = Meta()
 
 def FindDone():
+
+    """
+    This function scans the ../Data/ directory for the number of special 
+    hilbert spaces that have already been simulated.
+
+    Returns
+    ---------------------------------------------------------------------------
+    len(files): integer
+        The number of special hilbert spaces that have already been simulated.
+
+    """
+
     files = ["../Data/" + ofile + "/" + file for file in os.listdir("../Data/" + ofile) if (file.lower().startswith('indtotuple'))]
     return len(files)
 
 
 def CheckRedundant(signature, checkDir):
+
+    """
+    This function checks other folders (in the checkDir list) for a given
+    signature to check if it has already been simulated. If found, it will be
+    copied.
+
+    Parameters
+    ---------------------------------------------------------------------------
+    signature: string
+        ANDREW TODO: description
+    checkDir: list (of strings)
+        List of directories to check
+
+
+    Returns
+    ---------------------------------------------------------------------------
+    redundant: boolean
+        Flags whether the signature was found elsewhere
+
+    """
 
     if len(checkDir) == 0:
         return False
