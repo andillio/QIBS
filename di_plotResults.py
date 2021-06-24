@@ -130,7 +130,8 @@ def makeSqueezeFig(t, aa, M, a):
 
     ax.plot([t[index]], [sq[index]], 'bo')
 
-    ax.set_xlim(0, np.max(t) )
+    ax.set_xlim(0, np.max(t[sq<2]) )
+    ax.set_ylim(0,2.)
 
     ax.legend(loc = 'lower right')
 
