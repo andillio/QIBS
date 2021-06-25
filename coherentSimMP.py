@@ -19,7 +19,7 @@ end = lambda id, start: print(f"Finish {id} in {time.time()-start:.4f} seconds")
 import sys
 
 # --------------- Simulation Params --------------- #
-r = 5 # scaling parameter
+r = 11 # scaling parameter
 IC = np.asarray([0,2,2,1,0])*r # initial occupation expectations
 
 name_ = "_("
@@ -412,7 +412,7 @@ def copyList(A):
         A deepcopy of the original list, A.
     """
     import copy
-    return copy.deepcopy(A_)
+    return copy.deepcopy(A)
 
 
 def RunTerm(sign):
