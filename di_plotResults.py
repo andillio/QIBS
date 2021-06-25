@@ -4,7 +4,7 @@ import numpy as np
 from numpy import linalg as LA 
 import matplotlib.pyplot as plt 
 
-simName = "Gr_r10"
+simName = "NE_r1"
 
 
 class figObj(object):
@@ -130,7 +130,10 @@ def makeSqueezeFig(t, aa, M, a):
 
     ax.plot([t[index]], [sq[index]], 'bo')
 
-    ax.set_xlim(0, np.max(t[sq<2]) )
+    if len(t[sq<2]):
+        ax.set_xlim(0, np.max(t[sq<2]) )
+    else:
+        ax.set_xlim(0, np.max(t) )
     ax.set_ylim(0,2.)
 
     ax.legend(loc = 'lower right')

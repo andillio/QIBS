@@ -13,18 +13,19 @@ from shutil import copyfile
 import datetime
 import FullQuantumObjRetry as FQ 
 import yt; yt.enable_parallelism();
-end = lambda id, start: print(f"Finish {id} in {time.time()-start:.4f} seconds")
+#end = lambda id, start: print(f"Finish {id} in {time.time()-start:.4f} seconds")
 import sys
 # --------------------------------------- #
 
 # --------------- Config Params --------------- #
-r = 1 # scaling parameter
-ofile =  "FNS_r" + str(r)  # name of directory to be created
+r = 5 # scaling parameter
+ofile =  "NE_r" + str(r)  # name of directory to be created
 # this can be used to restart the simulation if it needs to be stopped for some reason
 # basically it should copy the completed parts of the sim if you specify the old directory
 # you need to make a new directory for the new sim data
 checkDir = [] 
 
+CUPY = True
 quad = True # should the velocity dispersion be quadratic (as opposed to linear)
 O2 = True # should a second order integrator be used
 
@@ -236,14 +237,11 @@ def InspectStatesP(inds, dE, terms):
 
 
 def GetTerms():
-    # start with most likely special hilbert space
-    P_goal = .999
-
     n = IC.sum()
     p = (np.arange(N)*IC).sum()
 
     signature = (n,p)
-    m.H_sp[signature] = []
+    m.H_sp[signature] = [IC]
     m.tags.append(str(signature))
 
 # given a signature of a special hilbert space, sign
@@ -262,6 +260,9 @@ def RunTerm(sign):
         
         # ------------ step 3a-c -------------- #
         fQ = initFQ(s, m.H_sp[sign][-1], m.H_sp[sign], sign) # initialize the full quantum solver
+
+        if CUPY:
+            fQ.ToCUPY() # solve using cupy
         # ------------------------------------- #
 
         s.solvers = [fQ] # add the full quantum solver to the simObj's solvers list
@@ -269,10 +270,10 @@ def RunTerm(sign):
         s.time0 = time.time() # time stuff
 
         # ------------ step 3d,e -------------- #
-        s.Run(False) # run the simulation 
+        s.Run() # run the simulation 
         # ------------------------------------- #
 
-        s.EndSim(text = False) # end the simulation
+        s.EndSim() # end the simulation
 
     done = FindDone()
     str_ = (('%.2f percent data created' % (100*float(done)/m.total) ) 
@@ -281,25 +282,6 @@ def RunTerm(sign):
     
     return 1
 
-
-def GetSortedKeys(sigs):
-    ns = []
-    keys = []
-
-    for key_ in sigs.keys():
-        ns.append(key_[0])
-        keys.append(key_)
-
-    ns = np.array(ns)
-    keys = np.array(keys)
-
-    sortedKeys = qu.sortE(ns, keys)
-
-    rkeys = []
-    for i in range(len(sortedKeys)-1,-1,-1):
-        rkeys.append(tuple(sortedKeys[i]))
-
-    return rkeys
 
 def main():
     m.time0 = time.time() # record the simulation 
@@ -316,18 +298,16 @@ def main():
     m.done = 0
 
     # -------------- step 3 ------------- #
-    print("running %i sp Hilbert spaces on %i cpus" %(len(m.H_sp), mp.cpu_count()))
-
     # simulate each special Hilbert space in parallel
     #pool = mp.Pool(mp.cpu_count()) #OLD
     #pool.map(RunTerm, m.H_sp.keys()) #OLD
     start = time.time()
-    for key in yt.parallel_objects( GetSortedKeys(m.H_sp), 0, dynamic=True):
+    for key in m.H_sp:
         print("\nDoing", key)
         sys.stdout.flush()
         RunTerm(key)
 
-    end(4, start)
+    #end(4, start)
     # ----------------------------------- #
 
     time1 = time.time()

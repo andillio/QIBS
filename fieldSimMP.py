@@ -6,6 +6,7 @@ import time
 import numpy as np
 import multiprocessing as mp 
 import utils as u
+import QUtils as qu
 import os
 import di_analysis
 from distutils.dir_util import copy_tree
@@ -13,7 +14,7 @@ from shutil import copyfile
 import datetime
 import FullQuantumObjRetry as FQ 
 import yt; yt.enable_parallelism();
-end = lambda id, start: print(f"Finish {id} in {time.time()-start:.4f} seconds")
+end = lambda id, start: print(f"Finish {id} in {time.time()-start:.4f} seconds" %() )
 import sys
 # --------------------------------------- #
 
