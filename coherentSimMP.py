@@ -19,7 +19,7 @@ end = lambda id, start: print(f"Finish {id} in {time.time()-start:.4f} seconds")
 import sys
 
 # --------------- Simulation Params --------------- #
-r = 5 # scaling parameter
+r = 11 # scaling parameter
 IC = np.asarray([0,2,2,1,0])*r # initial occupation expectations
 
 name_ = "_("
@@ -42,7 +42,7 @@ O2 = True # should a second order integrator be used
 dt = 1e-4 / np.sqrt(r) # simulation timestep
 
 frames = 300 # how many data drops should there be
-framesteps = int(256 * np.sqrt(r)) # number of timesteps between data drops
+framesteps = int(256 * r) # number of timesteps between data drops
 
 N = len(IC) # the number of allowed momentum modes
 np.random.seed(1) 
@@ -74,18 +74,50 @@ class Meta(object):
     """
 
     def __init__(self):
-        self.time0 = 0 # sim start time
+        
+        # Simulation start time
+        self.time0 = 0
+
+        # Counter for total number of special Hilbert spaces
         self.total = 0
 
+        # List to hold tags
         self.tags = []
 
+        # Dict to hold all special Hilbert spaces
         self.H_sp = {}
 
+        # Generate file containing all simulation metadata
         self.MakeMetaFile(N = N, dt = dt, frames = frames, framesteps = framesteps, IC = IC,
             omega0 = omega0, Lamda0 = lambda0, C = C)
 
 
     def MakeMetaFile(self, **kwargs):
+
+        '''
+        This method of the Meta object generates the file which contains all 
+        given metadata.
+
+        Parameters (kwargs expected y default)
+        ---------------------------------------------------------------------------
+        N: int
+            Number of particles in the simulation.
+        dt: float
+            The step size which the solver takes for each step.
+        framesteps: int
+            The number of time steps between each data dump.
+        frames: int
+            The number of data dumps, which with dt and framesteps determines the 
+            total sim time.
+        IC: list-like
+            A list-like object containing the number of particles in each mode.
+        omega0: float
+            The kinetic constant (1.0 by default).
+        Lambda0: float
+            The 4-point interaction constant.
+        C: float
+            The long range interaction constant.
+        '''
         
         try:
             os.mkdir("../Data/" + ofile + "/")
@@ -128,9 +160,9 @@ def CheckRedundant(signature, checkDir):
     Parameters
     ---------------------------------------------------------------------------
     signature: string
-        ANDREW TODO: description
-    checkDir: list (of strings)
-        List of directories to check
+        The signature of the special Hilbert space.
+    checkDir: list-like (of strings)
+        List-like object containing directories to check.
 
 
     Returns
@@ -140,16 +172,17 @@ def CheckRedundant(signature, checkDir):
 
     """
 
+    # If there is no directories elsewhere to check, it cannot be redundant.
     if len(checkDir) == 0:
         return False
 
+    # Initialize boolean flag and signature to check for 
     redundant = False
-
     tag = str(signature)
 
-    # check if this sim has already been run
+    # Check if this signature has already been run elsewhere
     if os.path.isdir("../" + checkDir + "/psi" + tag) and os.path.isdir("../" + checkDir + "/Num" + tag):
-        print("\nspecial Hilbert space already simulated, copying data...")
+        print("\nSpecial Hilbert space already simulated, copying data...")
         redundant = True 
 
         try:
@@ -161,6 +194,7 @@ def CheckRedundant(signature, checkDir):
         except OSError:
             pass
 
+        # Copy wavefunction, number, and maps from old to new
         fromDirectory = "../" + checkDir + "/psi" + tag
         toDirectory = "../" + ofile + "/psi" + tag
         copy_tree(fromDirectory, toDirectory)
@@ -181,79 +215,160 @@ def CheckRedundant(signature, checkDir):
 
 
 def initSim():
-    s = S.SimObj() # the simulation object
+    
+    """
+    This function initializes a SimObj Object, which contains all metadata
+    including number of modes, timestep size, number of timesteps, output
+    directory, and physical parameters like interaction constants.
 
-    s.N = N # number of modes
-    s.dt = dt # time step
-    s.omega0 = omega0 # kinetic constant, hbar/m
-    s.C = C # long range interaction constant
-    s.Lambda0 = lambda0 # constant interaction constant
-    s.frames = frames # number of data drops 
-    s.framesteps = framesteps # timesteps in between data drops
-    s.ofile = ofile # name of data directory
+    Returns
+    ---------------------------------------------------------------------------
+    s: SimObj instance
+        An instance of the SimObj class.
+    """
+    
+    # Initialize a blank simulation object
+    s = S.SimObj() 
 
-    s.kord = np.arange(N) - N/2 # kmodes in natural order (as oppose to fft ordering)
+    # Populate with metadata
+    s.N = N                         # number of modes
+    s.dt = dt                       # time step
+    s.omega0 = omega0               # kinetic constant, hbar/m
+    s.C = C                         # long range interaction constant
+    s.Lambda0 = lambda0             # constant interaction constant
+    s.frames = frames               # number of data drops 
+    s.framesteps = framesteps       # timesteps in between data drops
+    s.ofile = ofile                 # name of data directory
+
+    s.kord = np.arange(N) - N/2     # kmodes in natural order (as oppose to fft ordering)
 
     return s
 
-# given sim object s
-# changes to the ICs dn, i.e. we simulate the term with IC + dn occupation
-# other states in special hilbert space
-# signature
 def initFQ(s, IC_, HS, sign):
-    fQ = FQ.QuantObj() # initialize the quantum object
 
-    fQ.is_dispersion_quadratic = quad # quadratic dispersion 
-    fQ.second_Order = O2 # order 2 solver 
-    fQ.E_m = s.kord # modes in natural order
+    """
+    This function initializes a FullQuantum object with the equivalent initial
+    conditions as in the QIBS method.
 
+    Parameters
+    ---------------------------------------------------------------------------
+    s: SimObj instance
+        An Instance of the SimObj class.
+    IC_: list or tuple
+        A list-like containing the number of particles in each mode.
+    HS: list or tuple
+        A list-like object containing the special
+    sign: str
+        The signature for the state in the Hilbert space.
+    """
 
-    fQ.IC = IC_ # the occupations for one of the terms in the special hilbert space
-    ntot = 0 # the total number of particles
-    ptot = 0 # the net momentum
+    # Initialize the FullQuantum object
+    fQ = FQ.QuantObj() 
+
+    
+    fQ.is_dispersion_quadratic = quad       # Boolean flag for quadratic dispersion
+    fQ.second_Order = O2                    # Boolean flag for second order accurate solver
+    fQ.E_m = s.kord                         # Modes in natural order (as opposed to fft order)
+    fQ.IC = IC_                             # Occupations for one of the terms in the special hilbert space
+   
+    ntot = 0                                # Total number of particles (counter)
+    ptot = 0                                # Total momentum (counter)
+
+    # Count particles and momentum
     for i in range(len(IC_)):
         n = fQ.IC[i]
         ntot += n 
         ptot += n*i
 
-    
-    fQ.tag = str(sign) # tag for data drops
+    # Save signature as attribute of FullQuantum object
+    # tag is a string
+    # signature is a tuple of integers
+    fQ.tag = str(sign) 
+    fQ.signature = (ntot, ptot)
 
     # ------------ step 3a,b -------------- #
     fQ.SetOpsFromIC(s) 
     # ------------------------------------- #
 
-    fQ.signature = (ntot, ptot)
 
     # ------------ step 3c -------------- #
     fQ.SetPsiHS(HS, IC, phi)
     # ----------------------------------- #
 
-    fQ.track_psi = True
-    fQ.track_EN = True 
-    fQ.track_rho = False
+
+    # Flags for tracking certain variables
+    fQ.track_psi = True         # Wavefunction
+    fQ.track_EN = True          # Expectation of Number Operator
 
     return fQ
 
-def FindDN(mu):
-    P_goal = .999
-    sig = 1
-    found = False
 
+def FindDN(mu, P_goal=0.999):
+
+    """
+    This function finds the discrete values around the mean of a Poisson random
+    variable such that at least P_goal=0.999 of the probability mass is being
+    tracked.
+
+    The values are returned as the difference from the expectation.
+
+    Parameters
+    ---------------------------------------------------------------------------
+    mu: int
+        The expected number of particles in a state
+
+    Returns
+    ---------------------------------------------------------------------------
+    [lower - mu, sig]: [int, int]
+        The lower and upper integers such that the probability mass contained 
+        in and between these two values (plus mu) is greater than P_goal=0.999.
+    """
+
+    # Start counter by checking +/- 1 integer away from mean
+    sig = 1
+
+    # Initialize convergence boolean flag
+    found = False
     while(not(found)):
+
+        # Initialize Probability Mass Counter
         P = 0
+
+        # If sig > mu, need to set lower bound to zero
         lower = np.max([0, mu - sig])
+
+        # Add all probability mass between mu-sig and mu+sig
         for i in range(lower, mu + sig + 1):
             P += st.poisson.pmf(i, mu)
+
+        # Check for convergence
         if P >= P_goal:
             found = True 
+
+        # If not converged, check a wider set of values.
         else:
             sig += 1
 
 
+    # Return lower and upper bound, expressed as difference from mean
     lower = np.max([0, mu - sig])
     return [lower - mu, sig]
+
 def GetDNs():
+        
+    """
+    This function uses FindDN to get the collection of the discrete values 
+    around the mean of a Poisson random variable such that at least
+    P_goal=0.999 of the probability mass is being tracked.
+
+    The values are returned as the difference from the expectation.
+
+    Returns
+    ---------------------------------------------------------------------------
+    Results: array-like
+        An array containing the residuals from the expectation value.
+    """
+
     DN = []
     for i in range(N):
         IC_ = IC[i]
@@ -267,6 +382,11 @@ def GetDNs():
     return Results
 
 def GetDNsR(DN, dn, Results):
+
+    """
+    ANDREW TODO
+    """
+
     DN_ = copyList(DN)
     if len(DN) > 0:
         DN__ = DN_.pop(0)
@@ -276,39 +396,78 @@ def GetDNsR(DN, dn, Results):
         Results.append(dn)
 
 def copyList(A):
-    A_ = []
-    for i in range(len(A)):
-        A_.append(A[i])
-    return A_
+
+    """
+    This function just copies a list. It was written before the original author
+    realized that the copy module had a deepcopy function.
+
+    Parameters
+    ---------------------------------------------------------------------------
+    A: list
+        A list of values
+
+    Returns
+    ---------------------------------------------------------------------------
+    deepcopy(A): list
+        A deepcopy of the original list, A.
+    """
+    import copy
+    return copy.deepcopy(A)
 
 
-# given a signature of a special hilbert space, sign
 def RunTerm(sign):
-    s = initSim() # initialize the simulation object
+        
+    """
+    This function runs a simulation of a special Hilbert space with a
+    particular signature.
 
-    # check if the special Hilbert space has already been simulated
+    Parameters
+    ---------------------------------------------------------------------------
+    sign: ANDREW TODO
+        The signature of the special Hilbert space.
+
+    Returns
+    ---------------------------------------------------------------------------
+    1: int
+        Boolean flag, success code.
+    """
+
+    # Initialize the simulation object
+    s = initSim() 
+
+    # Check if the special Hilbert space has already been simulated
     redundant_ = False
     for j in range(len(checkDir)):
         checkDir_ = checkDir[j]
         if not(redundant_):
             redundant_ = CheckRedundant(sign, checkDir_)
     
-    # if it has not then begin the simulation
+    # If it has not then begin the simulation
     if not(redundant_):
         
         # ------------ step 3a-c -------------- #
-        fQ = initFQ(s, m.H_sp[sign][-1], m.H_sp[sign], sign) # initialize the full quantum solver
+
+        # Initialize the full quantum solver
+        fQ = initFQ(s, m.H_sp[sign][-1], m.H_sp[sign], sign) 
         # ------------------------------------- #
 
-        s.solvers = [fQ] # add the full quantum solver to the simObj's solvers list
-        fQ.ReadyDir(ofile) # create directories for data drops
-        s.time0 = time.time() # time stuff
+        # Add the full quantum solver to the simObj's solvers list
+        s.solvers = [fQ] 
+
+        # Create directories for data dumps
+        fQ.ReadyDir(ofile) 
+
+        # Start timer
+        s.time0 = time.time()
 
         # ------------ step 3d,e -------------- #
-        s.Run(False) # run the simulation 
+
+        # Run the simulation 
+        s.Run(verbose=False)
         # ------------------------------------- #
 
-        s.EndSim(text = False) # end the simulation
+        # End the simulation
+        s.EndSim(text = False) 
 
     done = FindDone()
     str_ = (('%.2f percent data created' % (100*float(done)/m.total) ) 
@@ -319,6 +478,22 @@ def RunTerm(sign):
 
 
 def GetSortedKeys(sigs):
+
+    """
+    This function sorts the keys in a particular way so that the run time
+    approximately decreases monotonically (ANDREW TODO: confirm this).
+
+    Parameters
+    ---------------------------------------------------------------------------
+    sigs: ANDREW TODO
+        The signatures of the special Hilbert spaces.
+
+    Returns
+    ---------------------------------------------------------------------------
+    rkeys: list
+        The signatures of the special Hilbert spaces, now sorted.
+    """
+
     ns = []
     keys = []
 
@@ -339,80 +514,70 @@ def GetSortedKeys(sigs):
 
 
 def main():
-    m.time0 = time.time() # record the simulation 
 
-    print("begining sim", ofile)
+    # Start a timer 
+    m.time0 = time.time() 
+    print("Begining sim", ofile)
 
     # ------------ step 1 --------------- #
-    start = time.time()
-    DNs = GetDNs() # find the term expressed as differences from the expectation values
-    end(0, start)
+    # Find the term expressed as differences from the expectation values
+    DNs = GetDNs() 
 
+    # Create a list of terms as list of number eigenstates
     terms = []
-
-    start = time.time()
-    # create a list of terms as list of number eigenstates
     for i in range(len(DNs)):
         IC_ = IC.copy()
         dn = DNs[i]
         for j in range(len(dn)):
             IC_[j] += dn[j]
         terms.append(IC_)
-    end(1, start)
     # ----------------------------------- #
 
     # ----------- step 2 ---------------- #
-    # find the special Hilbert spaces (SHS) associated with these terms
-    # for each term in the coherent state sum
-    start = time.time()
+    # Find the special Hilbert spaces (SHS) associated with these terms
+    # for each term in the coherent state sum.
     for i in range(len(terms)):
         term = terms[i] 
-        p = (np.arange(N)*np.array(term)).sum() # identify momentum
-        n = np.array(term).sum() # identify total particle number
-        signature = (n,p) # signature identifying a given SHS
-        if not(signature in m.H_sp): # if this SHS is not in the dictionary 
-            m.H_sp[signature] = [term] # add it to the dictionary
-            m.tags.append(str(signature)) # the tags list is used in data interpretation
+        p = (np.arange(N)*np.array(term)).sum()     # Identify momentum
+        n = np.array(term).sum()                    # Identify total particle number
+        signature = (n,p)                           # Signature identifying a given SHS
+        if not(signature in m.H_sp):                # If this SHS is not in the dictionary, 
+            m.H_sp[signature] = [term]              # add it to the dictionary
+            m.tags.append(str(signature))           # The tags list is used in data interpretation
         else:
-            m.H_sp[signature].append(term) # add this term to the SHS
-    end(3, start)
+            m.H_sp[signature].append(term)          # Add this term to the SHS
     # ----------------------------------- #
 
-    # these are used for timing
+    # Gather total number of Hilbert spaces (used for timer)
     m.total = len(m.H_sp.keys())
     m.done = 0
 
     # -------------- step 3 ------------- #
-    print("running %i sp Hilbert spaces on %i cpus" %(len(m.H_sp), mp.cpu_count()))
+    print("Running simulation with %i sp Hilbert spaces." %(len(m.H_sp)))
 
-    # simulate each special Hilbert space in parallel
-    #pool = mp.Pool(mp.cpu_count()) #OLD
-    #pool.map(RunTerm, m.H_sp.keys()) #OLD
-    start = time.time()
-    if FindDone() != m.total:
-        for key in yt.parallel_objects( GetSortedKeys(m.H_sp), 0, dynamic=True):
-            print("\nDoing", key)
-            sys.stdout.flush()
-            RunTerm(key)
+    # Simulate each special Hilbert space in parallel
+    for key in yt.parallel_objects( GetSortedKeys(m.H_sp), 0, dynamic=True):
+        print("\nDoing", key)
+        sys.stdout.flush()
+        RunTerm(key)
 
-    end(4, start)
     # ----------------------------------- #
 
+    # Start timer for I/O and Data Interpretation
     time1 = time.time()
 
+    # Save tags
     tags_ = np.array(m.tags)
     np.save("../Data/" + ofile + "/" + "tags" + ".npy", tags_)
 
-    print("\nbegining data interpretation")
-
+    print("\nBeginning data interpretation")
     for i in range(len(dIs)):
         dIs[i].main(ofile, tags_, plot = False)
-    print('analysis completed in %i hrs, %i mins, %i s' %u.hms(time.time()-time1))
+    print('Analysis completed in %i hrs, %i mins, %i s' %u.hms(time.time()-time1))
 
-    print('script completed in %i hrs, %i mins, %i s' %u.hms(time.time()-m.time0))
+    print('Script completed in %i hrs, %i mins, %i s' %u.hms(time.time()-m.time0))
     u.ding()
     sys.stdout.flush()
-
 
 if __name__ == "__main__":
     main()
