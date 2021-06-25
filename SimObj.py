@@ -64,7 +64,7 @@ class SimObj(object):
 
 
     # runs the simulation
-    def Run(self, output = True):
+    def Run(self, verbose = True):
         
         # loops through data drops
         for i in range(self.frames):
@@ -89,7 +89,7 @@ class SimObj(object):
                     # ------------------------------------- #
 
             # info drop on terminal
-            if output:
+            if verbose:
                 u.repeat_print(('%i hrs, %i mins, %i s remaining.' %u.remaining(i + 1, self.frames, self.time0)))
 
 
