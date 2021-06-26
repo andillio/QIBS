@@ -5,7 +5,7 @@ import QUtils as qu
 from numpy import linalg as LA 
 
 simNames = ["Gr_r1","Gr_r2","Gr_r3","Gr_r4","Gr_r5", "Gr_r6", "Gr_r7", 
-"Gr_r8", "Gr_r9", "Gr_r10", "Gr_r15"]
+"Gr_r8", "Gr_r9", "Gr_r10", "Gr_r11", "Gr_r12", "Gr_r13", "Gr_r15"]
 #simNames = ["Sin_h1_r1"]
 t_dyn = 1./np.sqrt(.1*5)
 
@@ -50,16 +50,16 @@ def constructSq(a,aa,M):
         for k in range(N):
             
             k_ = (-1*k -1)%N
-            #xi_k = np.conj(xi_p[i,k_])
-            xi_k = xi_p[i,k]
+            xi_k = np.conj(xi_p[i,k_])
+            #xi_k = xi_p[i,k]
 
             aS[i] += xi_k*a[i,k]
 
             for j in range(N):
                 j_ = (-1*j -1)%N
 
-                #xi_j = np.conj(xi_p[i,j_])
-                xi_j = xi_p[i,j]
+                xi_j = np.conj(xi_p[i,j_])
+                #xi_j = xi_p[i,j]
 
                 aaS[i] += xi_k*xi_j*aa[i,k,j]
                 baS[i] += np.conj(xi_k)*xi_j*M[i,k,j]
