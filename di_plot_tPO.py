@@ -7,9 +7,6 @@ simNames = ["Gr_r1","Gr_r3", "Gr_r4","Gr_r5", "Gr_r6", "Gr_r7",
 "Gr_r8", "Gr_r9", "Gr_r10"]
 t_dyn = 1./np.sqrt(.1*5)
 
-
-print("Test")
-
 class figObj(object):
 
     def __init__(self):
