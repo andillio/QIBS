@@ -417,9 +417,9 @@ def ding():
 	dur2 = .15
 	freq1 = 600
 	freq2 = 700
-	os.system('play  --no-show-progress --null --channels 1 synth %s sine %f' % (dur1, freq1))
-	time.sleep(.04)
-	os.system('play --no-show-progress --null --channels 1 synth %s sine %f' % (dur2, freq2))
+	#os.system('play  --no-show-progress --null --channels 1 synth %s sine %f' % (dur1, freq1))
+	#time.sleep(.04)
+	#os.system('play --no-show-progress --null --channels 1 synth %s sine %f' % (dur2, freq2))
 
 
 class figObj(object):
