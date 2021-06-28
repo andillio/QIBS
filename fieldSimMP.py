@@ -18,6 +18,7 @@ end = lambda id, start: print(f"Finish {id} in {time.time()-start:.4f} seconds" 
 import sys
 # --------------------------------------- #
 
+
 # --------------- Config Params --------------- #
 r = 1 # scaling parameter
 ofile =  "FNS_r" + str(r)  # name of directory to be created

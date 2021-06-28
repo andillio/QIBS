@@ -227,7 +227,7 @@ def analyzeTimeStep(i):
     t = fo.dt*fo.framsteps*(i+1)
     outputs = {}
 
-    for sto, tag_ in yt.parallel_objects( fo.tags , 0, storage=outputs, dynamic=True):
+    for sto, tag_ in yt.parallel_objects( fo.tags , 0, storage=outputs, dynamic = True):
         sys.stdout.flush()
         sto.result_id = tag_
         sig = str2sig(tag_)
