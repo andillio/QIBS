@@ -17,9 +17,14 @@ import FullQuantumObjRetry as FQ
 import yt; yt.enable_parallelism();
 end = lambda id, start: print(f"Finish {id} in {time.time()-start:.4f} seconds")
 import sys
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-r', type=int, default=1)
+args = parser.parse_args()
 
 # --------------- Simulation Params --------------- #
-r = 11 # scaling parameter
+r = args.r # scaling parameter
 IC = np.asarray([0,2,2,1,0])*r # initial occupation expectations
 
 name_ = "_("
