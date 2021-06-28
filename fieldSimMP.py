@@ -18,7 +18,6 @@ end = lambda id, start: print(f"Finish {id} in {time.time()-start:.4f} seconds" 
 import sys
 # --------------------------------------- #
 
-print("Test")
 
 # --------------- Config Params --------------- #
 r = 1 # scaling parameter
