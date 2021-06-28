@@ -408,7 +408,7 @@ def copyList(A):
 
     Returns
     ---------------------------------------------------------------------------
-    A_: list
+    deepcopy(A): list
         A deepcopy of the original list, A.
     """
     import copy
