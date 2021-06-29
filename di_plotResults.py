@@ -4,7 +4,7 @@ import numpy as np
 from numpy import linalg as LA 
 import matplotlib.pyplot as plt 
 
-simName = "NE_r1"
+simName = "Gr_r15"
 
 
 class figObj(object):
@@ -87,16 +87,16 @@ def constructSq(a,aa,M):
         for k in range(N):
             
             k_ = (-1*k -1)%N
-            #xi_k = np.conj(xi_p[i,k_])
-            xi_k = xi_p[i,k]
+            xi_k = np.conj(xi_p[i,k])
+            #xi_k = xi_p[i,k]
 
             aS[i] += xi_k*a[i,k]
 
             for j in range(N):
                 j_ = (-1*j -1)%N
 
-                #xi_j = np.conj(xi_p[i,j_])
-                xi_j = xi_p[i,j]
+                xi_j = np.conj(xi_p[i,j])
+                #xi_j = xi_p[i,j]
 
                 aaS[i] += xi_k*xi_j*aa[i,k,j]
                 baS[i] += np.conj(xi_k)*xi_j*M[i,k,j]
