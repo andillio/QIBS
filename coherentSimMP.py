@@ -14,7 +14,7 @@ from distutils.dir_util import copy_tree
 from shutil import copyfile
 import datetime
 import FullQuantumObjRetry as FQ 
-import yt; yt.enable_parallelism();
+import yt; yt.enable_parallelism(); is_root = yt.is_root()
 end = lambda id, start: print(f"Finish {id} in {time.time()-start:.4f} seconds")
 import sys
 import argparse
@@ -522,7 +522,8 @@ def main():
 
     # Start a timer 
     m.time0 = time.time() 
-    print("Begining sim", ofile)
+    if is_root:
+        print("Begining sim", ofile)
 
     # ------------ step 1 --------------- #
     # Find the term expressed as differences from the expectation values
@@ -558,11 +559,12 @@ def main():
     m.done = 0
 
     # -------------- step 3 ------------- #
-    print("Running simulation with %i sp Hilbert spaces." %(len(m.H_sp)))
+    if is_root:
+        print("Running simulation with %i sp Hilbert spaces." %(len(m.H_sp)))
 
     # Simulate each special Hilbert space in parallel
     for key in yt.parallel_objects( GetSortedKeys(m.H_sp), 0, dynamic=True):
-        print("\nDoing", key)
+        print("\nWorking on key", key)
         sys.stdout.flush()
         RunTerm(key)
 
@@ -575,12 +577,15 @@ def main():
     tags_ = np.array(m.tags)
     np.save("../Data/" + ofile + "/" + "tags" + ".npy", tags_)
 
-    print("\nBeginning data interpretation")
+    if is_root:
+        print("\nBeginning data interpretation")
     for i in range(len(dIs)):
         dIs[i].main(ofile, tags_, plot = False)
-    print('Analysis completed in %i hrs, %i mins, %i s' %u.hms(time.time()-time1))
+    if is_root:
+        print('Analysis completed in %i hrs, %i mins, %i s' %u.hms(time.time()-time1))
 
-    print('Script completed in %i hrs, %i mins, %i s' %u.hms(time.time()-m.time0))
+    if is_root:
+        print('Script completed in %i hrs, %i mins, %i s' %u.hms(time.time()-m.time0))
     u.ding()
     sys.stdout.flush()
 
