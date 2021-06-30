@@ -48,7 +48,7 @@ def constructSq(a,aa,M):
         xi_p[i,:] = principle#*np.sqrt(eigs[-1])
     
         for k in range(N):
-            
+            xi_j = np.conj(xi_p[i,j])
             k_ = (-1*k -1)%N
             xi_k = np.conj(xi_p[i,k])
             #xi_k = xi_p[i,k]
