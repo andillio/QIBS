@@ -523,7 +523,7 @@ def main():
     # Start a timer 
     m.time0 = time.time() 
     if is_root:
-        print("Begining sim", ofile)
+        print("Beginning sim", ofile)
 
     # ------------ step 1 --------------- #
     # Find the term expressed as differences from the expectation values
