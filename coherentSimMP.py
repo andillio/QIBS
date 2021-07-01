@@ -143,7 +143,7 @@ def FindDone():
     return len(files)
 
 
-def checkRedundant(signature):
+def CheckRedundant(signature):
     if OVERWRITE:
         return False
     
@@ -387,7 +387,7 @@ def RunTerm(sign):
     s = initSim() 
 
     # Check if the special Hilbert space has already been simulated
-    redundant_ = CheckRedundant(sign, checkDir_)
+    redundant_ = CheckRedundant(sign)
     
     # If it has not then begin the simulation
     if not(redundant_):
