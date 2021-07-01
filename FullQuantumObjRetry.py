@@ -7,6 +7,7 @@ except ImportError:
 import utils as u
 import time
 import os
+from os import path
 import sys
 import pickle
 eps = sys.float_info.epsilon
@@ -347,17 +348,30 @@ class QuantObj(object):
         return (cp.conj(psi_)*N*psi).sum()
 
 
+    def CheckRedundant(self, s):
+        if s.OVERWRITE:
+            return False
+
+        if path.exists("../Data/" + s.ofile + "/psi" + self.tag + "/" + "drop" + str(s.currentFrame) + ".npy"):
+            self.psi = np.load("../Data/" + s.ofile + "/psi" + self.tag + "/" + "drop" + str(s.currentFrame) + ".npy")
+            return True
+        else:
+            return False
+
     def Update(self, dt, s):
+        redundant_ = self.CheckRedundant(s)
+
+        if not(redundant_):
+            # integrate Schroedinger's equation
+            for i in range(s.framesteps):
+                
+                if self.second_Order:
+                    dpsi_dt = (self.W * self.psi[self.inds]).sum(axis = 0)
+                    self.psi -= 1j*dt*dpsi_dt + dt*dt*(self.W * dpsi_dt[self.inds]).sum(axis = 0)/2.
+                else:
+                    self.psi -= 1j*dt*(self.W * self.psi[self.inds]).sum(axis = 0)
         
-        # integrate Schroedinger's equation
-        for i in range(s.framesteps):
-            
-            if self.second_Order:
-                dpsi_dt = (self.W * self.psi[self.inds]).sum(axis = 0)
-                self.psi -= 1j*dt*dpsi_dt + dt*dt*(self.W * dpsi_dt[self.inds]).sum(axis = 0)/2.
-            else:
-                self.psi -= 1j*dt*(self.W * self.psi[self.inds]).sum(axis = 0)
-                    
+
     def ReadyDir(self,ofile):
         if self.track_psi:
             try:

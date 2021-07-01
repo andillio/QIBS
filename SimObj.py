@@ -37,6 +37,7 @@ class SimObj(object):
         # meta parameters
         self.frames = 100 # total data drops
         self.framesteps = 10 # steps in between data drops
+        self.currentFrame = 0
 
         self.time0 = time.time()
 
@@ -46,6 +47,8 @@ class SimObj(object):
 
         self.hbar = 1. 
         self.mpart = 1.
+
+        self.OVERWRITE = True # should overwrite existing files
 
 
     def MakeMetaFile(self, **kwargs):
@@ -70,6 +73,7 @@ class SimObj(object):
         for i in range(self.frames):
             
             # update the simulation time
+            self.currentFrame = i
             dt_ = self.dt
             self.T += dt_ * self.framesteps
 

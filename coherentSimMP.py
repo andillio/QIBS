@@ -7,8 +7,6 @@ import multiprocessing as mp
 import utils as u
 import QUtils as qu
 import os
-import di_analysis
-import di_analysisLarge
 import di_analysisBig
 from distutils.dir_util import copy_tree
 from shutil import copyfile
@@ -35,11 +33,8 @@ for i in range(len(IC)):
 
 name_ += ")"
 
+OVERWRITE = True # should I overwrite existing files or resume from where I left off
 ofile =  "test_r" + str(r) + name_  # name of directory to be created
-# this can be used to restart the simulation if it needs to be stopped for some reason
-# basically it should copy the completed parts of the sim if you specify the old directory
-# you need to make a new directory for the new sim data
-checkDir = [] 
 
 quad = True # should the velocity dispersion be quadratic (as opposed to linear)
 O2 = True # should a second order integrator be used
@@ -57,15 +52,8 @@ omega0 = 1. # kinetic constant
 lambda0 = 0 # 4-point interaction constant
 C = -.1 / r # long range interaction constant
 
-if r > 5:
-    dIs = [di_analysisBig] # data interpreters
-else:
-    dIs = [di_analysis] # data interpreters
+dIs = [di_analysisBig] # data interpreters
 # ----------------------------------------------- #
-
-
-
-
 
 
 
@@ -155,68 +143,24 @@ def FindDone():
     return len(files)
 
 
-def CheckRedundant(signature, checkDir):
-
-    """
-    This function checks other folders (in the checkDir list) for a given
-    signature to check if it has already been simulated. If found, it will be
-    copied.
-
-    Parameters
-    ---------------------------------------------------------------------------
-    signature: string
-        The signature of the special Hilbert space.
-    checkDir: list-like (of strings)
-        List-like object containing directories to check.
-
-
-    Returns
-    ---------------------------------------------------------------------------
-    redundant: boolean
-        Flags whether the signature was found elsewhere
-
-    """
-
-    # If there is no directories elsewhere to check, it cannot be redundant.
-    if len(checkDir) == 0:
+def checkRedundant(signature):
+    if OVERWRITE:
         return False
-
+    
     # Initialize boolean flag and signature to check for 
-    redundant = False
     tag = str(signature)
 
-    # Check if this signature has already been run elsewhere
-    if os.path.isdir("../" + checkDir + "/psi" + tag) and os.path.isdir("../" + checkDir + "/Num" + tag):
-        print("\nSpecial Hilbert space already simulated, copying data...")
-        redundant = True 
+    dir_ = "../Data/" + ofile + "/psi" + tag + "/"
 
-        try:
-            os.mkdir("../" + ofile + "/psi" + tag)
-        except OSError:
-            pass
-        try:
-            os.mkdir("../" + ofile + "/Num" + tag)
-        except OSError:
-            pass
-
-        # Copy wavefunction, number, and maps from old to new
-        fromDirectory = "../" + checkDir + "/psi" + tag
-        toDirectory = "../" + ofile + "/psi" + tag
-        copy_tree(fromDirectory, toDirectory)
-
-        fromDirectory = "../" + checkDir + "/Num" + tag
-        toDirectory = "../" + ofile + "/Num" + tag
-        copy_tree(fromDirectory, toDirectory)
-
-        src = "../" + checkDir + "/" + "indToTuple" + tag + ".pkl"
-        dst = "../" + ofile + "/" + "indToTuple" + tag + ".pkl"
-        copyfile( src, dst )
-
-        src = "../" + checkDir + "/" + "tupleToInd" + tag + ".pkl"
-        dst = "../" + ofile + "/" + "tupleToInd" + tag + ".pkl"
-        copyfile( src, dst )
-
-    return redundant
+    # check if the directory already exists
+    if os.path.isdir(dir_):
+        
+        # check if it has all the data drops already
+        files = [dir_ + file for file in os.listdir(dir_) if (file.lower().startswith('drop'))]
+        if len(files) == frames + 1:
+            return True 
+    
+    return False
 
 
 def initSim():
@@ -246,6 +190,8 @@ def initSim():
     s.ofile = ofile                 # name of data directory
 
     s.kord = np.arange(N) - N/2     # kmodes in natural order (as oppose to fft ordering)
+
+    s.OVERWRITE = OVERWRITE         # should overwrite existing data drops
 
     return s
 
@@ -303,7 +249,7 @@ def initFQ(s, IC_, HS, sign):
 
     # Flags for tracking certain variables
     fQ.track_psi = True         # Wavefunction
-    fQ.track_EN = True          # Expectation of Number Operator
+    fQ.track_EN = False         # Expectation of Number Operator
 
     return fQ
 
@@ -441,11 +387,7 @@ def RunTerm(sign):
     s = initSim() 
 
     # Check if the special Hilbert space has already been simulated
-    redundant_ = False
-    for j in range(len(checkDir)):
-        checkDir_ = checkDir[j]
-        if not(redundant_):
-            redundant_ = CheckRedundant(sign, checkDir_)
+    redundant_ = CheckRedundant(sign, checkDir_)
     
     # If it has not then begin the simulation
     if not(redundant_):
