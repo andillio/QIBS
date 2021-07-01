@@ -4,7 +4,7 @@ import numpy as np
 from numpy import linalg as LA 
 import matplotlib.pyplot as plt 
 
-simName = "Gr_r15"
+simName = "Attr_r12"
 
 
 class figObj(object):
@@ -58,7 +58,7 @@ def makePOQFig(t, eigs, Q):
     ax.plot(t, PO, label = r'$1 - \lambda_p/n_{tot}$')
     ax.plot(t, Q, label = r'$Q$')
 
-    ax.set_xlim(0, taplesnp.max(t) )
+    ax.set_xlim(0, np.max(t) )
     ax.set_ylim(0, 1.05)
 
     ax.legend()
