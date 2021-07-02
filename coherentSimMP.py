@@ -144,22 +144,39 @@ def FindDone():
 
 
 def CheckRedundant(signature):
+    """
+    This function checks other folders for a given signature to check if it
+    has already been simulated. If found, it will be copied.
+
+    Parameters
+    ---------------------------------------------------------------------------
+    signature: string
+       	The signature of the special Hilbert space.
+
+
+    Returns
+    ---------------------------------------------------------------------------
+    redundant: boolean
+       	Flags whether the signature was found elsewhere
+
+    """
+
     if OVERWRITE:
         return False
-    
-    # Initialize boolean flag and signature to check for 
+
+    # Initialize boolean flag and signature to check for
     tag = str(signature)
 
     dir_ = "../Data/" + ofile + "/psi" + tag + "/"
 
     # check if the directory already exists
     if os.path.isdir(dir_):
-        
+
         # check if it has all the data drops already
         files = [dir_ + file for file in os.listdir(dir_) if (file.lower().startswith('drop'))]
         if len(files) == frames + 1:
-            return True 
-    
+            return True
+
     return False
 
 
