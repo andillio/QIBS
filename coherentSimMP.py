@@ -1,9 +1,9 @@
 # --------------- imports --------------- #
 import scipy.stats as st
-import SimObj as S 
-import time 
+import SimObj as S
+import time
 import numpy as np
-import multiprocessing as mp 
+import multiprocessing as mp
 import utils as u
 import QUtils as qu
 import os
@@ -11,7 +11,7 @@ import di_analysisBig
 from distutils.dir_util import copy_tree
 from shutil import copyfile
 import datetime
-import FullQuantumObjRetry as FQ 
+import FullQuantumObjRetry as FQ
 import yt; yt.enable_parallelism(); is_root = yt.is_root()
 end = lambda id, start: print(f"Finish {id} in {time.time()-start:.4f} seconds")
 import sys
@@ -34,7 +34,7 @@ for i in range(len(IC)):
 name_ += ")"
 
 OVERWRITE = True # should I overwrite existing files or resume from where I left off
-ofile =  "test_r" + str(r) + name_  # name of directory to be created
+ofile =  "repulsive_r" + str(r) + name_  # name of directory to be created
 
 quad = True # should the velocity dispersion be quadratic (as opposed to linear)
 O2 = True # should a second order integrator be used
@@ -48,9 +48,14 @@ N = len(IC) # the number of allowed momentum modes
 np.random.seed(1) 
 phi = np.random.uniform(0, 2 * np.pi, N) # field phases
 
-omega0 = 1. # kinetic constant
-lambda0 = 0 # 4-point interaction constant
-C = -.1 / r # long range interaction constant
+#omega0 = 1. # kinetic constant
+omega0 = 1/r
+
+#lambda0 = 0 # 4-point interaction constant
+lambda0 =  0.1/r
+
+#C = -.1 / r # long range interaction constant
+C = 0
 
 dIs = [di_analysisBig] # data interpreters
 # ----------------------------------------------- #
@@ -63,11 +68,11 @@ class Meta(object):
     """
     An object that stores all of the simulation metadata, including tags,
     number of particles, timestep(s), frames, initial conditions, and
-    physical parameters. 
+    physical parameters.
     """
 
     def __init__(self):
-        
+
         # Simulation start time
         self.time0 = 0
 
@@ -266,7 +271,7 @@ def initFQ(s, IC_, HS, sign):
 
     # Flags for tracking certain variables
     fQ.track_psi = True         # Wavefunction
-    fQ.track_EN = False         # Expectation of Number Operator
+    fQ.track_EN = True          # Expectation of Number Operator
 
     return fQ
 
