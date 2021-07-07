@@ -352,9 +352,14 @@ class QuantObj(object):
         if s.OVERWRITE:
             return False
 
-        if path.exists("../Data/" + s.ofile + "/psi" + self.tag + "/" + "drop" + str(s.currentFrame) + ".npy"):
-            self.psi = np.load("../Data/" + s.ofile + "/psi" + self.tag + "/" + "drop" + str(s.currentFrame) + ".npy")
-            return True
+        file = "../Data/" + s.ofile + "/psi" + self.tag + "/" + "drop" + str(s.currentFrame) + ".npy" 
+        if path.exists(file):
+            try:
+                self.psi = np.load(file)
+                return True
+            except:
+                #os.system(f'rm {file}')
+                return False
         else:
             return False
 
