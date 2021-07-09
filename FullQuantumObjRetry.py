@@ -13,19 +13,23 @@ import pickle
 eps = sys.float_info.epsilon
 
 class QuantObj(object):
-
-    # given number of modes N
+    """
+    This Quantum Object class stores all data, metadata, and contains several
+    built-in methods necessary for the simulation as well as some utility
+    functions.
+    """
     def __init__(self):
 
         self.indToTuple = {}
         self.tupleToInd = {}
 
-        # full quantum state
-        self.psi = None # wavefunction
+        # Full quantum state (wavefunction)
+        self.psi = None 
 
-        self.s = None # sim object
+        # Simulation object
+        self.s = None 
 
-        # number operators
+        # Number operators
         self.Num = None 
 
         # Hamiltonian operators
@@ -35,23 +39,25 @@ class QuantObj(object):
         # Momentum for each mode
         self.E_m = None
 
-        self.IC = None # initial conditions (i.e. initial mode occupation)
-        self.E_tot = None # total energy of state
-        self.N_p = None # total number of particles
+        self.IC = None              # Initial conditions (i.e. initial mode occupation)
+        self.E_tot = None           # Total energy of state
+        self.N_p = None             # Total number of particles
         self.signature = None 
     
-        self.is_np = True # is using numpy or cupy
+        # Boolean to record whether numpy or cupy is being used
+        self.is_np = True 
 
         self.is_dispersion_quadratic = False # is the dispersion relation quadratic (as opposed to linear)
         self.second_Order = True # should I include second order intergration terms
 
-        # keep track of variables
-        self.track_psi = False # track the wavefunction
-        self.track_EN = True # track the expectation values of number operators
-        self.track_rho = False # track the density matrix
+        # Booleans to flag which variables are evolved/solved/tracked
+        self.track_psi = False              # track the wavefunction
+        self.track_EN = True                # track the expectation values of number operators
+        self.track_rho = False              # track the density matrix
 
         self.tag = "" # output tag
         
+        # Boolean to flag whether simulation is working
         self.working = True
 
     # given SimObj s
@@ -122,25 +128,33 @@ class QuantObj(object):
                     # then keep populating modes
                     self.InspectStatesP(inds + [i], new_dE)
         
-    # finds the Hamiltonian and Number operators in The Hilbert Space
-    # given SimObj s
     def SetOps(self, s):
+        '''
+        This method finds the Hamiltonian operators 
+
+        Parameters
+        -----------------------------------------------------------------------
+        s : SimObj instance
+          An instance of the SimObj class.
+        '''
+
         N_m = len(self.IC)
         N_s = len(self.indToTuple)
 
         self.Num = np.zeros((N_m, N_s))
 
-        # key: state_i
-        # value: list of states that are coupled to this state via H 
+        # Key: state_i
+        # Value: list of states that are coupled to this state via H 
         indToInds = {}
-        # key: state_i
-        # value: list of corresponding weights for each state in indToInds
+
+        # Key: state_i
+        # Value: list of corresponding weights for each state in indToInds
         indToW = {}
 
         for i in range(N_s):
-            tuple_i = self.indToTuple[i] # corresponds to occupations in tuple_i
-            np_i =np.asarray(tuple_i) # this is the number eigenstate of the ket
-            E_i = (self.E_m*np_i).sum() # I say E, but its really momentum
+            tuple_i = self.indToTuple[i]    # corresponds to occupations in tuple_i
+            np_i =np.asarray(tuple_i)       # this is the number eigenstate of the ket
+            E_i = (self.E_m*np_i).sum()     # I say E, but its really momentum
 
             for m in range(len(np_i)):
                 # the number operator on the mth mode has
@@ -190,6 +204,16 @@ class QuantObj(object):
 
 
     def GetWeight(self,np_i, k, s):
+        '''
+        This method returns (ANDREW TODO: complete)
+
+        Parameters
+        -----------------------------------------------------------------------
+        k : int
+          1D index for special hilbert space (ANDREW TODO: confirm)
+        s : SimObj instance
+          An instance of the SimObj class. 
+        '''
         N_m = len(self.IC) # number of modes
 
         # express k in base N_m
@@ -251,6 +275,20 @@ class QuantObj(object):
     # phi, angle(z) for simulation coherent state defined by param z
     def SetPsiHS(self, HS, IC, phi):
 
+        '''
+        This method takes a given special hilbert space, initial conditions,
+        and phases and builds up the wavefunction (self.psi) via reductions.
+
+        Parameters
+        -----------------------------------------------------------------------
+        HS: array-like
+          States in special Hilbert space
+        IC: array-like
+          Initial conditions
+        phi: array-like
+          Phases
+        '''
+
         N_s = len(self.indToTuple)
 
         self.psi = np.zeros(N_s) + 0j
@@ -273,6 +311,22 @@ class QuantObj(object):
             
 
     def SetPsiHS_mn(self, HS, IC, phi):
+        '''
+        This method takes a given special hilbert space, initial conditions,
+        and phases and builds up the wavefunction (self.psi) via reductions.
+
+        (ANDREW TODO:) For multinomial (?).
+
+        Parameters
+        -----------------------------------------------------------------------
+        HS: array-like
+          States in special Hilbert space
+        IC: array-like
+          Initial conditions
+        phi: array-like
+          Phases
+        '''
+
         N_s = len(self.indToTuple)
 
         self.psi = np.zeros(N_s) + 0j
@@ -295,6 +349,11 @@ class QuantObj(object):
 
     
     def SetPsi(self):
+
+        '''
+        Initializes the wavefunction for number eigenstates.
+        '''
+
         N_s = len(self.indToTuple)
 
         self.psi = np.zeros(N_s) + 0j
@@ -304,6 +363,9 @@ class QuantObj(object):
         self.psi[ind] = 1
 
     def ToCUPY(self):
+        '''
+        Converts all stored variables to CuPY arrays
+        '''
         self.psi = cp.asarray(self.psi)
         self.E_m = cp.asarray(self.E_m)
         self.Num = cp.asarray(self.Num)
@@ -312,6 +374,9 @@ class QuantObj(object):
         self.is_np = False
 
     def ToNUMPY(self):
+        '''
+        Converts all stored variables to numpy arrays
+        '''
         self.psi = cp.asnumpy(self.psi)
         self.E_m = cp.asnumpy(self.E_m)
         self.Num = cp.asnumpy(self.Num)
@@ -323,26 +388,105 @@ class QuantObj(object):
 
 
     def stateMul(self, H, psi):
+        '''
+        This method returns mat-vec operation H.psi
+
+        Parameters
+        -----------------------------------------------------------------------
+        H: 2-D array-like
+          Hamiltonian
+        psi: 1-D array-like
+          Wavefunction
+
+        Returns
+        -----------------------------------------------------------------------
+        H.psi: 1-D array-like
+          Hamiltonian operating on wavefunction.
+        '''
         if self.is_np:
             return np.einsum("fi,i->f", H, psi)
         return cp.einsum("fi,i->f", H, psi)
 
     def opMul(self, H, H_):
+        '''
+        This method returns mat-mat operation H.H_
+
+        Parameters
+        -----------------------------------------------------------------------
+        H: 2-D array-like
+          Hamiltonian (or other 2D matrix)
+        H_: 2-D array-like
+          Hamiltonian (or other 2D matrix)
+
+        Returns
+        -----------------------------------------------------------------------
+        H.H_: 1-D array-like
+          Hamiltonian operating on itself (or another matrix).
+        '''
         if self.is_np:
             return np.einsum("ij,jk->ik", H, H_) 
         return cp.einsum("ij,jk->ik", H, H_)
 
     def expectation(self, N, psi):
+        '''
+        This method finds the expectation value of the number operator (or
+        other matrix), and returns the real part
+
+        Parameters
+        -----------------------------------------------------------------------
+        N: 2-D array-like
+          Number operator (or other 2D matrix)
+        psi: 1-D array-like
+          Wavefunction
+
+        Returns
+        -----------------------------------------------------------------------
+        real(conjugate(psi).N.psi): 1-D array-like
+          Expectation value of N: < N > = < psi | N | psi >
+        '''
+
         if self.is_np:
             return (np.conj(psi)*N*psi).sum().real
         return (cp.conj(psi)*N*psi).sum().real
     
     def NumExpectations(self):
+        '''
+        This method finds the expectation value of the number operator (or
+        other matrix)
+
+        Parameters
+        -----------------------------------------------------------------------
+        N: 2-D array-like
+          Number operator (or other 2D matrix)
+        psi: 1-D array-like
+          Wavefunction
+
+        Returns
+        -----------------------------------------------------------------------
+        conjugate(psi).N.psi: 1-D array-like
+          Expectation value of N: < N > = < psi | N | psi >
+        '''
         if self.is_np:
             return (np.einsum('i,ji,i->j', np.conj(self.psi), self.Num, self.psi )).real
         return (cp.einsum('i,ji,i->j', cp.conj(self.psi), self.Num, self.psi )).real
 
     def innerProd(self, psi_, N, psi):
+        '''
+        This method finds the expectation value of the number operator (or
+        other matrix)
+
+        Parameters
+        -----------------------------------------------------------------------
+        N: 2-D array-like
+          Number operator (or other 2D matrix)
+        psi: 1-D array-like
+          Wavefunction
+
+        Returns
+        -----------------------------------------------------------------------
+        conjugate(psi).N.psi: 1-D array-like
+          Expectation value of N: < N > = < psi | N | psi >
+        '''
         if self.is_np:
             return (np.conj(psi_)*N*psi).sum()
         return (cp.conj(psi_)*N*psi).sum()
@@ -352,13 +496,30 @@ class QuantObj(object):
         if s.OVERWRITE:
             return False
 
-        if path.exists("../Data/" + s.ofile + "/psi" + self.tag + "/" + "drop" + str(s.currentFrame) + ".npy"):
-            self.psi = np.load("../Data/" + s.ofile + "/psi" + self.tag + "/" + "drop" + str(s.currentFrame) + ".npy")
-            return True
+        file = "../Data/" + s.ofile + "/psi" + self.tag + "/" + "drop" + str(s.currentFrame) + ".npy" 
+        if path.exists(file):
+            try:
+                self.psi = np.load(file)
+                return True
+            except:
+                #os.system(f'rm {file}')
+                return False
         else:
             return False
 
     def Update(self, dt, s):
+        '''
+        This method handles the evolution of the wavefunction, given a timestep
+        and an instance of the SimObj class.
+
+        Parameters
+        -----------------------------------------------------------------------
+        dt: float
+          The timestep to take
+        s: SimObj instance
+          An instance of SimObj class, which includes all metadata required for
+          the simulation.
+        '''
         redundant_ = self.CheckRedundant(s)
 
         if not(redundant_):
@@ -373,6 +534,15 @@ class QuantObj(object):
         
 
     def ReadyDir(self,ofile):
+        '''
+        Given a path, this method creates the Data directory hierarchy
+        required for all quantities that are to be tracked. 
+
+        Parameters
+        -----------------------------------------------------------------------
+        ofile: str
+          Location where hierarchy is to be made (within ../Data/)
+        '''
         if self.track_psi:
             try:
                 os.mkdir("../Data/" + ofile + "/psi" + self.tag)
@@ -390,6 +560,16 @@ class QuantObj(object):
                 pickle.dump(self.tupleToInd, f, pickle.HIGHEST_PROTOCOL)
 
     def DataDrop(self,i,ofile_):
+        '''
+        This method dumps the quantities tracked to disk.
+
+        Parameters
+        -----------------------------------------------------------------------
+        i: int
+          Integer which tracks which time step (or data dump) is to be dumped
+        ofile: str
+          Location to dump to (within ../Data)
+        '''
 
         # output psi        
         if self.track_psi:
