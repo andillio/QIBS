@@ -1,25 +1,28 @@
 # --------------- imports --------------- #
 import scipy.stats as st
-import SimObj as S 
-import time 
+import SimObj as S
+import time
 import numpy as np
-import multiprocessing as mp 
+import multiprocessing as mp
 import utils as u
 import QUtils as qu
 import os
-import di_analysis
-import di_analysisLarge
 import di_analysisBig
 from distutils.dir_util import copy_tree
 from shutil import copyfile
 import datetime
-import FullQuantumObjRetry as FQ 
-import yt; yt.enable_parallelism();
+import FullQuantumObjRetry as FQ
+import yt; yt.enable_parallelism(); is_root = yt.is_root()
 end = lambda id, start: print(f"Finish {id} in {time.time()-start:.4f} seconds")
 import sys
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-r', type=int, default=1)
+args = parser.parse_args()
 
 # --------------- Simulation Params --------------- #
-r = 11 # scaling parameter
+r = args.r # scaling parameter
 IC = np.asarray([0,2,2,1,0])*r # initial occupation expectations
 
 name_ = "_("
@@ -30,11 +33,8 @@ for i in range(len(IC)):
 
 name_ += ")"
 
-ofile =  "test_r" + str(r) + name_  # name of directory to be created
-# this can be used to restart the simulation if it needs to be stopped for some reason
-# basically it should copy the completed parts of the sim if you specify the old directory
-# you need to make a new directory for the new sim data
-checkDir = [] 
+OVERWRITE = True # should I overwrite existing files or resume from where I left off
+ofile =  "repulsive_r" + str(r) + name_  # name of directory to be created
 
 quad = True # should the velocity dispersion be quadratic (as opposed to linear)
 O2 = True # should a second order integrator be used
@@ -48,19 +48,17 @@ N = len(IC) # the number of allowed momentum modes
 np.random.seed(1) 
 phi = np.random.uniform(0, 2 * np.pi, N) # field phases
 
-omega0 = 1. # kinetic constant
-lambda0 = 0 # 4-point interaction constant
-C = -.1 / r # long range interaction constant
+#omega0 = 1. # kinetic constant
+omega0 = 1/r
 
-if r > 5:
-    dIs = [di_analysisBig] # data interpreters
-else:
-    dIs = [di_analysis] # data interpreters
+#lambda0 = 0 # 4-point interaction constant
+lambda0 =  0.1/r
+
+#C = -.1 / r # long range interaction constant
+C = 0
+
+dIs = [di_analysisBig] # data interpreters
 # ----------------------------------------------- #
-
-
-
-
 
 
 
@@ -70,11 +68,11 @@ class Meta(object):
     """
     An object that stores all of the simulation metadata, including tags,
     number of particles, timestep(s), frames, initial conditions, and
-    physical parameters. 
+    physical parameters.
     """
 
     def __init__(self):
-        
+
         # Simulation start time
         self.time0 = 0
 
@@ -150,68 +148,41 @@ def FindDone():
     return len(files)
 
 
-def CheckRedundant(signature, checkDir):
-
+def CheckRedundant(signature):
     """
-    This function checks other folders (in the checkDir list) for a given
-    signature to check if it has already been simulated. If found, it will be
-    copied.
+    This function checks other folders for a given signature to check if it
+    has already been simulated. If found, it will be copied.
 
     Parameters
     ---------------------------------------------------------------------------
     signature: string
-        The signature of the special Hilbert space.
-    checkDir: list-like (of strings)
-        List-like object containing directories to check.
+       	The signature of the special Hilbert space.
 
 
     Returns
     ---------------------------------------------------------------------------
     redundant: boolean
-        Flags whether the signature was found elsewhere
+       	Flags whether the signature was found elsewhere
 
     """
 
-    # If there is no directories elsewhere to check, it cannot be redundant.
-    if len(checkDir) == 0:
+    if OVERWRITE:
         return False
 
-    # Initialize boolean flag and signature to check for 
-    redundant = False
+    # Initialize boolean flag and signature to check for
     tag = str(signature)
 
-    # Check if this signature has already been run elsewhere
-    if os.path.isdir("../" + checkDir + "/psi" + tag) and os.path.isdir("../" + checkDir + "/Num" + tag):
-        print("\nSpecial Hilbert space already simulated, copying data...")
-        redundant = True 
+    dir_ = "../Data/" + ofile + "/psi" + tag + "/"
 
-        try:
-            os.mkdir("../" + ofile + "/psi" + tag)
-        except OSError:
-            pass
-        try:
-            os.mkdir("../" + ofile + "/Num" + tag)
-        except OSError:
-            pass
+    # check if the directory already exists
+    if os.path.isdir(dir_):
 
-        # Copy wavefunction, number, and maps from old to new
-        fromDirectory = "../" + checkDir + "/psi" + tag
-        toDirectory = "../" + ofile + "/psi" + tag
-        copy_tree(fromDirectory, toDirectory)
+        # check if it has all the data drops already
+        files = [dir_ + file for file in os.listdir(dir_) if (file.lower().startswith('drop'))]
+        if len(files) == frames + 1:
+            return True
 
-        fromDirectory = "../" + checkDir + "/Num" + tag
-        toDirectory = "../" + ofile + "/Num" + tag
-        copy_tree(fromDirectory, toDirectory)
-
-        src = "../" + checkDir + "/" + "indToTuple" + tag + ".pkl"
-        dst = "../" + ofile + "/" + "indToTuple" + tag + ".pkl"
-        copyfile( src, dst )
-
-        src = "../" + checkDir + "/" + "tupleToInd" + tag + ".pkl"
-        dst = "../" + ofile + "/" + "tupleToInd" + tag + ".pkl"
-        copyfile( src, dst )
-
-    return redundant
+    return False
 
 
 def initSim():
@@ -241,6 +212,8 @@ def initSim():
     s.ofile = ofile                 # name of data directory
 
     s.kord = np.arange(N) - N/2     # kmodes in natural order (as oppose to fft ordering)
+
+    s.OVERWRITE = OVERWRITE         # should overwrite existing data drops
 
     return s
 
@@ -436,11 +409,7 @@ def RunTerm(sign):
     s = initSim() 
 
     # Check if the special Hilbert space has already been simulated
-    redundant_ = False
-    for j in range(len(checkDir)):
-        checkDir_ = checkDir[j]
-        if not(redundant_):
-            redundant_ = CheckRedundant(sign, checkDir_)
+    redundant_ = CheckRedundant(sign)
     
     # If it has not then begin the simulation
     if not(redundant_):
@@ -517,7 +486,8 @@ def main():
 
     # Start a timer 
     m.time0 = time.time() 
-    print("Begining sim", ofile)
+    if is_root:
+        print("Beginning sim", ofile)
 
     # ------------ step 1 --------------- #
     # Find the term expressed as differences from the expectation values
@@ -553,11 +523,12 @@ def main():
     m.done = 0
 
     # -------------- step 3 ------------- #
-    print("Running simulation with %i sp Hilbert spaces." %(len(m.H_sp)))
+    if is_root:
+        print("Running simulation with %i sp Hilbert spaces." %(len(m.H_sp)))
 
     # Simulate each special Hilbert space in parallel
     for key in yt.parallel_objects( GetSortedKeys(m.H_sp), 0, dynamic=True):
-        print("\nDoing", key)
+        print("\nWorking on key", key)
         sys.stdout.flush()
         RunTerm(key)
 
@@ -570,12 +541,15 @@ def main():
     tags_ = np.array(m.tags)
     np.save("../Data/" + ofile + "/" + "tags" + ".npy", tags_)
 
-    print("\nBeginning data interpretation")
+    if is_root:
+        print("\nBeginning data interpretation")
     for i in range(len(dIs)):
         dIs[i].main(ofile, tags_, plot = False)
-    print('Analysis completed in %i hrs, %i mins, %i s' %u.hms(time.time()-time1))
+    if is_root:
+        print('Analysis completed in %i hrs, %i mins, %i s' %u.hms(time.time()-time1))
 
-    print('Script completed in %i hrs, %i mins, %i s' %u.hms(time.time()-m.time0))
+    if is_root:
+        print('Script completed in %i hrs, %i mins, %i s' %u.hms(time.time()-m.time0))
     u.ding()
     sys.stdout.flush()
 

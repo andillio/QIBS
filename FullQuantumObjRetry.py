@@ -7,6 +7,7 @@ except ImportError:
 import utils as u
 import time
 import os
+from os import path
 import sys
 import pickle
 eps = sys.float_info.epsilon
@@ -491,7 +492,23 @@ class QuantObj(object):
         return (cp.conj(psi_)*N*psi).sum()
 
 
+    def CheckRedundant(self, s):
+        if s.OVERWRITE:
+            return False
+
+        file = "../Data/" + s.ofile + "/psi" + self.tag + "/" + "drop" + str(s.currentFrame) + ".npy" 
+        if path.exists(file):
+            try:
+                self.psi = np.load(file)
+                return True
+            except:
+                #os.system(f'rm {file}')
+                return False
+        else:
+            return False
+
     def Update(self, dt, s):
+<<<<<<< HEAD
         '''
         This method handles the evolution of the wavefunction, given a timestep
         and an instance of the SimObj class.
@@ -504,16 +521,21 @@ class QuantObj(object):
           An instance of SimObj class, which includes all metadata required for
           the simulation.
         '''
+=======
+        redundant_ = self.CheckRedundant(s)
+
+        if not(redundant_):
+            # integrate Schroedinger's equation
+            for i in range(s.framesteps):
+                
+                if self.second_Order:
+                    dpsi_dt = (self.W * self.psi[self.inds]).sum(axis = 0)
+                    self.psi -= 1j*dt*dpsi_dt + dt*dt*(self.W * dpsi_dt[self.inds]).sum(axis = 0)/2.
+                else:
+                    self.psi -= 1j*dt*(self.W * self.psi[self.inds]).sum(axis = 0)
+>>>>>>> 203e01b923ce942cfcf5325e32684db592ef8fac
         
-        # integrate Schroedinger's equation
-        for i in range(s.framesteps):
-            
-            if self.second_Order:
-                dpsi_dt = (self.W * self.psi[self.inds]).sum(axis = 0)
-                self.psi -= 1j*dt*dpsi_dt + dt*dt*(self.W * dpsi_dt[self.inds]).sum(axis = 0)/2.
-            else:
-                self.psi -= 1j*dt*(self.W * self.psi[self.inds]).sum(axis = 0)
-                    
+
     def ReadyDir(self,ofile):
         '''
         Given a path, this method creates the Data directory hierarchy
