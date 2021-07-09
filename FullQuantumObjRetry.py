@@ -508,7 +508,6 @@ class QuantObj(object):
             return False
 
     def Update(self, dt, s):
-<<<<<<< HEAD
         '''
         This method handles the evolution of the wavefunction, given a timestep
         and an instance of the SimObj class.
@@ -521,7 +520,6 @@ class QuantObj(object):
           An instance of SimObj class, which includes all metadata required for
           the simulation.
         '''
-=======
         redundant_ = self.CheckRedundant(s)
 
         if not(redundant_):
@@ -533,7 +531,6 @@ class QuantObj(object):
                     self.psi -= 1j*dt*dpsi_dt + dt*dt*(self.W * dpsi_dt[self.inds]).sum(axis = 0)/2.
                 else:
                     self.psi -= 1j*dt*(self.W * self.psi[self.inds]).sum(axis = 0)
->>>>>>> 203e01b923ce942cfcf5325e32684db592ef8fac
         
 
     def ReadyDir(self,ofile):
