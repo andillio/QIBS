@@ -33,6 +33,8 @@ for i in range(len(IC)):
 
 name_ += ")"
 
+# NOTE: if not overwriting all simulation and meta params need to be the same
+# as the simulation being resumed
 OVERWRITE = True # should I overwrite existing files or resume from where I left off
 ofile =  "repulsive_r" + str(r) + name_  # name of directory to be created
 
