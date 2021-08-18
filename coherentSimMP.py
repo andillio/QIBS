@@ -59,6 +59,9 @@ lambda0 =  0.1/r
 #C = -.1 / r # long range interaction constant
 C = 0
 
+# Probability mass to include
+P_goal = 0.999
+
 dIs = [di_analysisBig] # data interpreters
 # ----------------------------------------------- #
 
@@ -81,15 +84,24 @@ class Meta(object):
         # Counter for total number of special Hilbert spaces
         self.total = 0
 
+        # Probability mass included
+        self.P_goal = P_goal
+
         # List to hold tags
         self.tags = []
 
         # Dict to hold all special Hilbert spaces
         self.H_sp = {}
 
+        # Quadratic dispersion
+        self.quad = quad
+
+        # Second-order integration
+        self.O2 = O2
+
         # Generate file containing all simulation metadata
         self.MakeMetaFile(N = N, dt = dt, frames = frames, framesteps = framesteps, IC = IC,
-            omega0 = omega0, Lamda0 = lambda0, C = C)
+            omega0 = omega0, Lamda0 = lambda0, C = C, P_goal = P_goal, quad = quad, O2 = O2)
 
 
     def MakeMetaFile(self, **kwargs):
@@ -278,7 +290,7 @@ def initFQ(s, IC_, HS, sign):
     return fQ
 
 
-def FindDN(mu, P_goal=0.999):
+def FindDN(mu, P_goal=P_goal):
 
     """
     This function finds the discrete values around the mean of a Poisson random
