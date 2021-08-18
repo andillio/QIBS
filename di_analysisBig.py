@@ -331,8 +331,8 @@ def analyzeTimeStep(i):
       (ANDREW TODO)
     a: (ANDREW TODO)
       (ANDREW TODO)
-    Q: (ANDREW TODO)
-      (ANDREW TODO)
+    Q: float
+      Classical aproximation error tracker
     '''
 
 
@@ -498,7 +498,7 @@ def makeMFig(t, lams):
 
 def makePOQFig(t, eigs, Q):
     '''
-    Make squeezing figure
+    Make classical approximation error tracker figure.
 
     Parameters
     ---------------------------------------------------------------------------
@@ -507,7 +507,7 @@ def makePOQFig(t, eigs, Q):
     eigs: array-like
       Eigenvalues of M operator
     Q: array-like
-      Squeezing operator
+      Error tracking matrix
     '''
     fig, ax = plt.subplots(figsize = (6,6))
 
@@ -528,6 +528,18 @@ def makePOQFig(t, eigs, Q):
     fig.savefig("../Figs/" + fo.name + "_POQ.pdf",bbox_inches = 'tight')
 
 def constructSq(a,aa,M):
+    '''
+    Construct squeezing operator
+
+    Parameters
+    ---------------------------------------------------------------------------
+    a: array-like
+      The a operator
+    aa: array-like
+      The aa operator
+    M: array-like
+      The M operator
+    '''
 
     N = len(a[0])
     n = np.sum(np.diag(M[0]))
@@ -568,6 +580,10 @@ def constructSq(a,aa,M):
     return 1 + 2*dbaS - 2*np.abs(daaS)
 
 def makeSqueezeFig(t, aa, M, a):
+    '''
+    
+    '''
+
     sq = constructSq(a, aa, M)
 
     fig, ax = plt.subplots(figsize = (6,6))
