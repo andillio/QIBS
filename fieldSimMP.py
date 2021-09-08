@@ -8,7 +8,7 @@ import multiprocessing as mp
 import utils as u
 import QUtils as qu
 import os
-import di_analysis
+import di_analysisBig
 from distutils.dir_util import copy_tree
 from shutil import copyfile
 import datetime
@@ -20,8 +20,8 @@ import sys
 
 
 # --------------- Config Params --------------- #
-r = 5 # scaling parameter
-ofile =  "FNS_Repl_r" + str(r)  # name of directory to be created
+r = 1 # scaling parameter
+ofile =  "FNS_testAnalsis_r" + str(r)  # name of directory to be created
 # this can be used to restart the simulation if it needs to be stopped for some reason
 # basically it should copy the completed parts of the sim if you specify the old directory
 # you need to make a new directory for the new sim data
@@ -45,7 +45,7 @@ omega0 = 1./r # kinetic constant
 lambda0 = 0.1/r # 4-point interaction constant
 C = 0.#-.1 / r # long range interaction constant
 
-dIs = [di_analysis] # data interpreters
+dIs = [di_analysisBig] # data interpreters
 # ----------------------------------------- #
 
 # a class used to control the global namespace
@@ -356,9 +356,9 @@ def main():
     print("running %i sp Hilbert spaces on %i cpus" %(len(m.H_sp), mp.cpu_count()))
 
     # simulate each special Hilbert space in parallel
+    start = time.time()
     #pool = mp.Pool(mp.cpu_count()) #OLD
     #pool.map(RunTerm, m.H_sp.keys()) #OLD
-    start = time.time()
     for key in yt.parallel_objects( GetSortedKeys(m.H_sp), 0):#, dynamic=True):
         print("\nDoing", key)
         sys.stdout.flush()
