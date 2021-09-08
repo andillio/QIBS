@@ -20,6 +20,9 @@ label = ""
 PLOT = True
 
 class figObj(object):
+    '''
+    This class stores all simulation metadata for figures
+    '''
 
     def __init__(self):
         self.meta = None
@@ -43,6 +46,20 @@ fo = figObj()
 
 
 def str2sig(string):
+    '''
+    This function takes in a string with format '(A, B)' and returns a tuple
+    with (A, B)
+
+    Parameters
+    ---------------------------------------------------------------------------
+    string: string
+      A string with format '(A, B)'
+    
+    Returns
+    ---------------------------------------------------------------------------
+    tuple: tuple
+      A tuple with (A, B)
+    '''
     string = string.replace('(','')
     string = string.replace(')','')
     ints = string.split(",")
@@ -50,6 +67,10 @@ def str2sig(string):
 
 
 def setFigObj(name, decimate):
+    '''
+    This function populates the attributes of the instance of the figObj class
+    with values.
+    '''
     # read in simulation parameters
     meta = u.getMetaKno(name, dir = 'Data/', N = "N", dt = "dt", frames = "frames", 
         framesteps = "framesteps", IC = "IC", omega0 = "omega0", Lambda0 = "Lambda0")
@@ -74,6 +95,19 @@ def setFigObj(name, decimate):
 
 
 def offDiag(sig, psi_j, indToTuple_j, i):
+    '''
+    This function constructs the offdiagonal term of the (ANDREW TODO: CONFIRM)
+    special Hilbert space hamiltonian.
+
+    Parameters
+    ---------------------------------------------------------------------------
+    psi_j: array-like
+      The (ANDREW TODO: CONFIRM) special hilbert space wavefunction
+    indToTuple_j: (ANDREW TODO)
+      Converts index of state to its tuple key
+    i: int
+      Index to state
+    '''
 
     M = np.zeros((fo.N, fo.N)) + 0j
 
@@ -120,6 +154,23 @@ def offDiag(sig, psi_j, indToTuple_j, i):
                 
 
 def get_aa(sig, psi_j, indToTuple_j, i):
+    '''
+    This function constructs the aa operator for (ANDREW TODO)
+
+    Parameters
+    ---------------------------------------------------------------------------
+    psi_j: array-like
+      The (ANDREW TODO: CONFIRM) special hilbert space wavefunction
+    indToTuple_j: (ANDREW TODO: what kind of thing is this?)
+      Converts index of state to its tuple key
+    i: int
+      Index to state
+
+    Returns
+    ---------------------------------------------------------------------------
+    aa: array-like
+      The aa operator
+    '''
 
     aa = np.zeros((fo.N, fo.N)) + 0j
 
@@ -172,6 +223,24 @@ def get_aa(sig, psi_j, indToTuple_j, i):
 
 def get_a(sig, psi_j, indToTuple_j, i):
 
+    '''
+    This function constructs the a operator for (ANDREW TODO)
+
+    Parameters
+    ---------------------------------------------------------------------------
+    psi_j: array-like
+      The (ANDREW TODO: CONFIRM) special hilbert space wavefunction
+    indToTuple_j: (ANDREW TODO: what kind of thing is this?)
+      Converts index of state to its tuple key
+    i: int
+      Index to state
+
+    Returns
+    ---------------------------------------------------------------------------
+    a: array-like
+      The a operator
+    '''
+
     a = np.zeros(fo.N) + 0j
 
     for a1 in range(fo.N):
@@ -207,6 +276,23 @@ def get_a(sig, psi_j, indToTuple_j, i):
     return a 
 
 def getN(psi_, indToTuple_):
+
+    '''
+    This function constructs the number operator for (ANDREW TODO)
+
+    Parameters
+    ---------------------------------------------------------------------------
+    psi_: array-like
+      The (ANDREW TODO: CONFIRM) special hilbert space wavefunction
+    indToTuple_j: (ANDREW TODO: what kind of thing is this?)
+      Converts index of state to its tuple key
+
+    Returns
+    ---------------------------------------------------------------------------
+    N: array-like
+      The N operator
+    '''
+
     N = np.zeros(fo.N)
 
     for j in range(len(indToTuple_)):
@@ -222,6 +308,32 @@ def getN(psi_, indToTuple_):
 
 
 def analyzeTimeStep(i):
+    '''
+    This function finds all of the relevant summarizing quantities for each
+    timestep, e.g. number, eigenvalues, squeezing
+
+    Parameters
+    ---------------------------------------------------------------------------
+    i: integer
+      Timestep to analyze
+
+    Returns
+    ---------------------------------------------------------------------------
+    t: float
+      Current simulation time
+    N: (ANDREW TODO)
+      (ANDREW TODO)
+    M: array-like
+      (ANDREW TODO)
+    eigs: array-like
+      Eigenvalues of M matrix
+    aa: (ANDREW TODO)
+      (ANDREW TODO)
+    a: (ANDREW TODO)
+      (ANDREW TODO)
+    Q: float
+      Classical aproximation error tracker
+    '''
 
 
     t = fo.dt*fo.framsteps*(i+1)
@@ -292,6 +404,9 @@ def analyzeTimeStep(i):
 
 
 def analyze():
+    '''
+    main() for analysis
+    '''
     print("Starting di_analysis...")
 
     time0 = time.time()
@@ -330,6 +445,16 @@ def analyze():
 
 
 def makeNFig(t, N):
+    '''
+    Make number operator figure.
+
+    Parameters
+    ---------------------------------------------------------------------------
+    t: float
+      Simulation time of a given timestep
+    N: array-like
+      Number operator 
+    '''
     fig, ax = plt.subplots(figsize = (6,6))
 
     ax.set_xlabel(r'$t$')
@@ -346,6 +471,16 @@ def makeNFig(t, N):
 
 
 def makeMFig(t, lams):
+    '''
+    Make M operator figure.
+
+    Parameters
+    ---------------------------------------------------------------------------
+    t: float
+      Simulation time of a given timestep
+    M: array-like
+      M operator 
+    '''
     fig, ax = plt.subplots(figsize = (6,6))
 
     ax.set_xlabel(r'$t$')
@@ -362,6 +497,18 @@ def makeMFig(t, lams):
 
 
 def makePOQFig(t, eigs, Q):
+    '''
+    Make classical approximation error tracker figure.
+
+    Parameters
+    ---------------------------------------------------------------------------
+    t: float
+      Simulation time of a given timestep
+    eigs: array-like
+      Eigenvalues of M operator
+    Q: array-like
+      Error tracking matrix
+    '''
     fig, ax = plt.subplots(figsize = (6,6))
 
     n = np.sum(fo.IC)
@@ -381,6 +528,18 @@ def makePOQFig(t, eigs, Q):
     fig.savefig("../Figs/" + fo.name + "_POQ.pdf",bbox_inches = 'tight')
 
 def constructSq(a,aa,M):
+    '''
+    Construct squeezing operator
+
+    Parameters
+    ---------------------------------------------------------------------------
+    a: array-like
+      The a operator
+    aa: array-like
+      The aa operator
+    M: array-like
+      The M operator
+    '''
 
     N = len(a[0])
     n = np.sum(np.diag(M[0]))
@@ -421,6 +580,10 @@ def constructSq(a,aa,M):
     return 1 + 2*dbaS - 2*np.abs(daaS)
 
 def makeSqueezeFig(t, aa, M, a):
+    '''
+    
+    '''
+
     sq = constructSq(a, aa, M)
 
     fig, ax = plt.subplots(figsize = (6,6))
