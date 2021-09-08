@@ -1,5 +1,6 @@
 import numpy as np
 import scipy.stats as st
+from scipy.stats import multinomial
 try:
     import cupy as cp
 except ImportError:

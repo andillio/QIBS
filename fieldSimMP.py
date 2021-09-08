@@ -14,20 +14,20 @@ from shutil import copyfile
 import datetime
 import FullQuantumObjRetry as FQ 
 import yt; yt.enable_parallelism();
-end = lambda id, start: print(f"Finish {id} in {time.time()-start:.4f} seconds" %() )
+#end = lambda id, start: print(f"Finish {id} in {time.time()-start:.4f} seconds" %() )
 import sys
 # --------------------------------------- #
 
 
 # --------------- Config Params --------------- #
-r = 1 # scaling parameter
-ofile =  "FNS_r" + str(r)  # name of directory to be created
+r = 5 # scaling parameter
+ofile =  "FNS_Repl_r" + str(r)  # name of directory to be created
 # this can be used to restart the simulation if it needs to be stopped for some reason
 # basically it should copy the completed parts of the sim if you specify the old directory
 # you need to make a new directory for the new sim data
 checkDir = [] 
 
-quad = True # should the velocity dispersion be quadratic (as opposed to linear)
+quad = False # should the velocity dispersion be quadratic (as opposed to linear)
 O2 = True # should a second order integrator be used
 
 dt = 1e-4 / np.sqrt(r) # simulation timestep
@@ -41,9 +41,9 @@ N = len(IC) # the number of allowed momentum modes
 np.random.seed(1) 
 phi = np.random.uniform(0, 2 * np.pi, N) # field phases
 
-omega0 = 1. # kinetic constant
-lambda0 = 0 # 4-point interaction constant
-C = -.1 / r # long range interaction constant
+omega0 = 1./r # kinetic constant
+lambda0 = 0.1/r # 4-point interaction constant
+C = 0.#-.1 / r # long range interaction constant
 
 dIs = [di_analysis] # data interpreters
 # ----------------------------------------- #
@@ -359,12 +359,12 @@ def main():
     #pool = mp.Pool(mp.cpu_count()) #OLD
     #pool.map(RunTerm, m.H_sp.keys()) #OLD
     start = time.time()
-    for key in yt.parallel_objects( GetSortedKeys(m.H_sp), 0, dynamic=True):
+    for key in yt.parallel_objects( GetSortedKeys(m.H_sp), 0):#, dynamic=True):
         print("\nDoing", key)
         sys.stdout.flush()
         RunTerm(key)
 
-    end(4, start)
+    #end(4, start)
     # ----------------------------------- #
 
     time1 = time.time()
