@@ -210,7 +210,7 @@ def get_aa(sig, psi_j, indToTuple_j, i):
                             val_ *= np.conj(psi_[i_])
 
                             aa[a1,a2] += val_ 
-                            aa[a1,a2] += val_
+                            aa[a2,a1] += val_
 
                         else:
                             val_ *= np.sqrt(state_j[a1])
